@@ -1,0 +1,57 @@
+{
+  "thinking": "The user is performing a basic pipetting protocol. The video shows the user setting the volume on a micropipette, aspirating liquid from a source container, and dispensing it into test tubes. The actions include a potential pre-wetting step and then two separate transfers of a yellow liquid. A graphical overlay ('thumbs down') suggests that one of the dispense steps may be intentionally incorrect for demonstration purposes. I will capture all distinct aspirate and dispense actions with their corresponding timestamps, volumes, and containers.",
+  "extracted_protocol": {
+    "thinking": "No specific protocol title is shown or mentioned. The video demonstrates the fundamental action of transferring a liquid sample using a micropipette. Therefore, a descriptive title is appropriate. The objective is classified as 'other' because it appears to be a demonstration or practice session rather than a specific analysis or preparation for a larger experiment.",
+    "title": "Liquid Transfer Demonstration",
+    "objective": "other"
+  },
+  "pipette_operations": [
+    {
+      "thinking": "The user aspirates from a cup containing a clear liquid. The pipette is set to 30µl. This is likely a pre-wetting step to condition the inside surface of the new pipette tip before aspirating the actual sample.",
+      "timestamp": 19.0,
+      "operation_type": "aspirate",
+      "source_destination": "cup with clear liquid",
+      "amount": "30µl"
+    },
+    {
+      "thinking": "The user dispenses the clear liquid back into the same source cup, which is characteristic of a pre-wetting or practice cycle.",
+      "timestamp": 20.2,
+      "operation_type": "dispense",
+      "source_destination": "cup with clear liquid",
+      "amount": "30µl"
+    },
+    {
+      "thinking": "After adjusting the pipette volume to 20µl, the user aspirates from the cup containing the yellow sample liquid. This is the first step of the sample transfer.",
+      "timestamp": 110.3,
+      "operation_type": "aspirate",
+      "source_destination": "cup with yellow liquid",
+      "amount": "20µl"
+    },
+    {
+      "thinking": "The user dispenses the 20µl of yellow liquid into a test tube. A 'thumbs down' icon appears on screen during this action, suggesting this is a demonstration of an incorrect technique, such as dispensing against the side of the tube high above any liquid.",
+      "timestamp": 123.5,
+      "operation_type": "dispense",
+      "source_destination": "test tube",
+      "amount": "20µl",
+      "warnings": [
+        {
+          "message": "A 'thumbs down' icon appears during the operation, possibly indicating an incorrect or undesirable technique."
+        }
+      ]
+    },
+    {
+      "thinking": "The user aspirates a second 20µl aliquot of the yellow sample liquid.",
+      "timestamp": 133.5,
+      "operation_type": "aspirate",
+      "source_destination": "cup with yellow liquid",
+      "amount": "20µl"
+    },
+    {
+      "thinking": "The user dispenses the second 20µl aliquot into a test tube.",
+      "timestamp": 139.2,
+      "operation_type": "dispense",
+      "source_destination": "test tube",
+      "amount": "20µl"
+    }
+  ]
+}
