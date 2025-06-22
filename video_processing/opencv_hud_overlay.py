@@ -79,35 +79,20 @@ def clean_text_for_display(text):
     return text.replace('µ', 'u').replace('μ', 'u')
 
 
-def draw_rounded_rectangle(frame, pt1, pt2, color, thickness=-1, radius=10, alpha=0.8):
-    """Draw a rounded rectangle with opacity"""
-    x1, y1 = pt1
-    x2, y2 = pt2
-    
-    # Create an overlay for transparency
+def draw_simple_rectangle_with_opacity(frame, pt1, pt2, color, alpha=0.7):
+    """Draw a simple rectangle with opacity - no curves"""
     overlay = frame.copy()
-    
-    # Draw the main rectangle
-    cv2.rectangle(overlay, (x1 + radius, y1), (x2 - radius, y2), color, thickness)
-    cv2.rectangle(overlay, (x1, y1 + radius), (x2, y2 - radius), color, thickness)
-    
-    # Draw corner circles for rounded effect
-    cv2.circle(overlay, (x1 + radius, y1 + radius), radius, color, thickness)
-    cv2.circle(overlay, (x2 - radius, y1 + radius), radius, color, thickness)
-    cv2.circle(overlay, (x1 + radius, y2 - radius), radius, color, thickness)
-    cv2.circle(overlay, (x2 - radius, y2 - radius), radius, color, thickness)
-    
-    # Blend with original frame for transparency
+    cv2.rectangle(overlay, pt1, pt2, color, -1)
     cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
 
 def draw_simple_text_with_bg(frame, text, position, font_scale, color, thickness=2, center=False):
-    """Simple text with rounded, semi-transparent background"""
+    """Simple text with semi-transparent background - back to simple font"""
     # Clean the text first
     text = clean_text_for_display(text)
     
-    # Try Menlo-style font (FONT_HERSHEY_DUPLEX is closest to monospace like Menlo)
-    font = cv2.FONT_HERSHEY_DUPLEX  # More hacker/terminal-like font
+    # Back to simple font like FFmpeg
+    font = cv2.FONT_HERSHEY_SIMPLEX  
     
     # Get text size
     (text_width, text_height), baseline = cv2.getTextSize(text, font, font_scale, thickness)
@@ -118,12 +103,12 @@ def draw_simple_text_with_bg(frame, text, position, font_scale, color, thickness
     if center:
         x = x - text_width // 2
     
-    # Draw rounded, semi-transparent background
+    # Draw simple semi-transparent background
     padding = 12
-    draw_rounded_rectangle(frame,
-                          (x - padding, y - text_height - padding),
-                          (x + text_width + padding, y + baseline + padding),
-                          (0, 0, 0), -1, radius=8, alpha=0.7)  # Semi-transparent black
+    draw_simple_rectangle_with_opacity(frame,
+                                      (x - padding, y - text_height - padding),
+                                      (x + text_width + padding, y + baseline + padding),
+                                      (0, 0, 0), alpha=0.7)  # Semi-transparent black
     
     # Draw text
     cv2.putText(frame, text, (x, y), font, font_scale, color, thickness, cv2.LINE_AA)
@@ -132,13 +117,13 @@ def draw_simple_text_with_bg(frame, text, position, font_scale, color, thickness
 
 
 def draw_simple_text_box(frame, text, x, y, max_width, font_scale, color):
-    """Simple text box with rounded, semi-transparent background"""
+    """Simple text box with semi-transparent background - no curves"""
     # Clean the text first
     text = clean_text_for_display(text)
     
-    font = cv2.FONT_HERSHEY_DUPLEX  # Matching hacker-style font
+    font = cv2.FONT_HERSHEY_SIMPLEX  # Back to simple font
     thickness = 2
-    line_height = int(30 * font_scale)
+    line_height = int(28 * font_scale)
     
     # Split text into words and wrap
     words = text.split()
@@ -165,18 +150,18 @@ def draw_simple_text_box(frame, text, x, y, max_width, font_scale, color):
         lines[-1] = lines[-1][:40] + "..."
     
     # Calculate box dimensions
-    box_height = len(lines) * line_height + 25
-    box_width = max_width + 25
+    box_height = len(lines) * line_height + 20
+    box_width = max_width + 20
     
-    # Draw rounded, semi-transparent background
-    draw_rounded_rectangle(frame,
-                          (x - 12, y - 12),
-                          (x + box_width, y + box_height),
-                          (0, 0, 0), -1, radius=10, alpha=0.75)  # Semi-transparent black
+    # Draw simple semi-transparent background
+    draw_simple_rectangle_with_opacity(frame,
+                                      (x - 12, y - 12),
+                                      (x + box_width, y + box_height),
+                                      (0, 0, 0), alpha=0.75)  # Semi-transparent black
     
     # Draw each line
     for i, line in enumerate(lines):
-        line_y = y + 12 + (i + 1) * line_height
+        line_y = y + 10 + (i + 1) * line_height
         cv2.putText(frame, line, (x, line_y), font, font_scale, color, thickness, cv2.LINE_AA)
     
     return box_height
@@ -251,21 +236,21 @@ def create_hud_video_opencv(input_video: str, timeline_file: str, output_video: 
                 main_font_scale, color, thickness=3, center=True
             )
             
-            # Draw detail text
+            # Draw detail text with more spacing
             if detail_text:
                 detail_font_scale = 1.5
                 draw_simple_text_with_bg(
                     frame, detail_text,
-                    (width//2, 150),
+                    (width//2, 170),  # More spacing from main text (was 150)
                     detail_font_scale, (255, 255, 255), thickness=2, center=True
                 )
             
-            # Draw thinking commentary as simple left sidebar
+            # Draw thinking commentary as simple left sidebar - moved down more toward center
             thinking_text = event.get("event_model", {}).get("thinking", "")
             if thinking_text:
-                # Left sidebar parameters
+                # Left sidebar parameters - moved closer to center
                 sidebar_x = 30
-                sidebar_y = 220  # Start below main text
+                sidebar_y = 300  # Moved down more (was 220)
                 sidebar_width = 400
                 commentary_font_scale = 0.7
                 
