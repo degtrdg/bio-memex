@@ -1,2 +1,8 @@
-.env
+
+label/data/
+
 .DS_Store
+*/.DS_Store
+
+.env
+
