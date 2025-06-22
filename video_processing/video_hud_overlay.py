@@ -183,46 +183,54 @@ def create_hud_video(
         # Get thinking commentary for left side
         thinking_text = event.get("event_model", {}).get("thinking", "")
         thinking_clean = thinking_text.replace("'", "").replace(":", " ").replace(";", " ").replace("μ", "u")
-        # Truncate thinking to keep it readable
-        if len(thinking_clean) > 100:
-            thinking_clean = thinking_clean[:97] + "..."
+        # Truncate thinking to keep it readable in a fixed box
+        if len(thinking_clean) > 120:
+            thinking_clean = thinking_clean[:117] + "..."
         
         # Create main HUD text (no manual newlines - use separate filters)
         main_text_only = main_clean
         
         # Position at top of screen, centered horizontally
-        y_position = "60"  # 60 pixels from top
+        y_position = "50"  # 50 pixels from top
+        
+        # Increase font sizes
+        main_font_size = font_size + 8  # Make main text even bigger
+        detail_font_size = max(28, font_size - 8)  # Bigger detail text
         
         # Create main drawtext filter with sci-fi style font
         main_filter = (
             f"{current_input}drawtext=text='{main_text_only}'"
-            f":fontcolor={color}:fontsize={font_size}:fontfile=/System/Library/Fonts/Menlo.ttc"
-            f":box=1:boxcolor=black@0.9:boxborderw=6"
+            f":fontcolor={color}:fontsize={main_font_size}:fontfile=/System/Library/Fonts/Menlo.ttc"
+            f":box=1:boxcolor=black@0.9:boxborderw=8"
             f":x=(w-text_w)/2:y={y_position}"
             f":enable='between(t,{start_time},{end_time})'"
         )
         
         # Add detail text below if it exists
-        detail_y = str(int(y_position) + font_size + 10)
+        detail_y = str(int(y_position) + main_font_size + 15)
         if detail_clean and detail_clean.strip():
             main_filter += f"[temp{i}];[temp{i}]drawtext=text='{detail_clean}'"
-            main_filter += f":fontcolor=white:fontsize={max(24, font_size-12)}:fontfile=/System/Library/Fonts/Menlo.ttc"
-            main_filter += f":box=1:boxcolor=black@0.9:boxborderw=4"
+            main_filter += f":fontcolor=white:fontsize={detail_font_size}:fontfile=/System/Library/Fonts/Menlo.ttc"
+            main_filter += f":box=1:boxcolor=black@0.9:boxborderw=6"
             main_filter += f":x=(w-text_w)/2:y={detail_y}"
             main_filter += f":enable='between(t,{start_time},{end_time})'"
         
-        # Add thinking commentary on left side if it exists
+        # Add thinking commentary on left side in a proper box if it exists
         if thinking_clean and thinking_clean.strip():
-            thinking_y = str(int(y_position) + 20)
+            # Position the commentary box vertically centered on left side
+            commentary_y = "(h-200)/2"  # Center vertically, assuming ~200px box height
+            commentary_width = "400"    # Fixed width
+            
             if detail_clean:
                 main_filter += f"[temp{i}b];[temp{i}b]"
             else:
                 main_filter += f"[temp{i}];[temp{i}]"
             
             main_filter += f"drawtext=text='{thinking_clean}'"
-            main_filter += f":fontcolor=gray:fontsize=16:fontfile=/System/Library/Fonts/Menlo.ttc"
-            main_filter += f":box=1:boxcolor=black@0.8:boxborderw=2"
-            main_filter += f":x=20:y={thinking_y}"  # Left side, 20px from edge
+            main_filter += f":fontcolor=lightgray:fontsize=20:fontfile=/System/Library/Fonts/Menlo.ttc"
+            main_filter += f":box=1:boxcolor=black@0.85:boxborderw=4"
+            main_filter += f":x=30:y={commentary_y}"  # Left side, 30px from edge
+            main_filter += f":text_w={commentary_width}"  # Fixed width for text wrapping
             main_filter += f":enable='between(t,{start_time},{end_time})'"
         
         main_filter += output_label
