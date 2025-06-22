@@ -54,6 +54,7 @@ class Reagent(BaseModel):
 class TipContaminationHistory(BaseModel):
     """History of tip contamination events"""
 
+    timestamp: datetime = Field(default_factory=datetime.now)
     frame_number: Optional[int] = Field(None, description="Video frame number")
     contamination_source: str = Field(..., description="What contaminated the tip")
     contamination_level: ContaminationLevel = Field(default=ContaminationLevel.UNKNOWN)
