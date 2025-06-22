@@ -156,6 +156,11 @@ def create_hud_video(
         end_time = event["end_time"]
         event_type = event["event_type"]
         
+        # Extend duration for better readability - minimum 3 seconds, add 2 seconds to original
+        original_duration = end_time - start_time
+        extended_duration = max(3.0, original_duration + 2.0)
+        end_time = start_time + extended_duration
+        
         # Get enhanced text with different sizes for different event types
         main_text, detail_text, font_size = create_enhanced_event_text(event)
         
@@ -193,9 +198,9 @@ def create_hud_video(
         # Position at top of screen, centered horizontally
         y_position = "50"  # 50 pixels from top
         
-        # Increase font sizes
-        main_font_size = font_size + 8  # Make main text even bigger
-        detail_font_size = max(28, font_size - 8)  # Bigger detail text
+        # Increase font sizes significantly for readability
+        main_font_size = font_size + 20  # Much bigger main text
+        detail_font_size = max(40, font_size)  # Much bigger detail text
         
         # Create main drawtext filter with sci-fi style font
         main_filter = (
@@ -215,10 +220,10 @@ def create_hud_video(
             main_filter += f":x=(w-text_w)/2:y={detail_y}"
             main_filter += f":enable='between(t,{start_time},{end_time})'"
         
-        # Add thinking commentary on left side if it exists
+        # Add thinking commentary at bottom center if it exists
         if thinking_clean and thinking_clean.strip():
-            # Position the commentary box on left side
-            commentary_y = 200  # Start position from top
+            # Position at bottom of screen, centered horizontally
+            commentary_y = "h-120"  # 120 pixels from bottom
             
             if detail_clean:
                 main_filter += f"[temp{i}b];[temp{i}b]"
@@ -226,9 +231,9 @@ def create_hud_video(
                 main_filter += f"[temp{i}];[temp{i}]"
             
             main_filter += f"drawtext=text='{thinking_clean}'"
-            main_filter += f":fontcolor=gray:fontsize=18:fontfile=/System/Library/Fonts/Menlo.ttc"
-            main_filter += f":box=1:boxcolor=black@0.85:boxborderw=4"
-            main_filter += f":x=30:y={commentary_y}"  # Left side position
+            main_filter += f":fontcolor=cyan:fontsize=32:fontfile=/System/Library/Fonts/Menlo.ttc"
+            main_filter += f":box=1:boxcolor=black@0.9:boxborderw=6"
+            main_filter += f":x=(w-text_w)/2:y={commentary_y}"  # Bottom center position
             main_filter += f":enable='between(t,{start_time},{end_time})'"
         
         main_filter += output_label
