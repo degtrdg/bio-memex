@@ -24,7 +24,6 @@ KEY CONSTRAINTS:
 - Video is captured at 1 FPS, so motion appears as discrete steps
 - Make reasonable inferences about what happens between frames
 - Only describe what you can clearly observe or reasonably infer
-- Focus on the big picture: what is the overall goal and procedure?
 
 YOUR TASK:
 Analyze the entire video to understand:
@@ -37,11 +36,10 @@ Analyze the entire video to understand:
 2. GOAL STATE: What should each well/container contain when complete?
    - Identify all target wells/containers
    - Determine what reagents should go into each one
-   - Estimate target volumes based on what you observe
+   - Use written procedures if they are given
 
 3. REAGENT SOURCES: What reagent sources are available?
-   - List all visible reagent containers and their contents
-   - Note any labels or identifying features
+   - List all visible reagent containers if given
 
 ANALYSIS APPROACH:
 - Watch the full video to understand the complete workflow
@@ -51,24 +49,24 @@ ANALYSIS APPROACH:
 - Consider the logical flow of the experimental procedure
 
 LAB NOTEBOOK INTERPRETATION:
-When analyzing lab notebooks or planning sheets:
-- OBSERVE EXACTLY what's written - don't extrapolate beyond what's visible
-- Count actual row/column labels present, don't assume standard patterns
-- Symbols can have multiple meanings - letters might be both positional labels AND reagent names
-- Scientists use abbreviated notation after establishing context:
-  * Full specification given once, then shortened forms used
-  * Units often specified once and assumed to apply throughout
-  * Context from earlier parts of the notebook informs later shorthand
-- Grid structure: headers typically indicate positions, cell contents indicate what goes there
-- Focus on the logical mapping between positions and contents as written
-- Don't fill in "missing" rows or columns that aren't explicitly shown
-- HANDWRITING INTERPRETATION: Lab notebooks often have unclear handwriting
-  * Make reasonable assumptions based on established patterns and context
-  * Consider experimental logic - scientists typically use systematic naming schemes
-  * Cross-reference with other parts of the notebook for consistency
-  * When letters are ambiguous, choose the interpretation that fits the established pattern
-- Example: If notebook shows "10mM Buffer X" at top, then grid cells contain "10X", this means "10mM of Buffer X"
-- Another example: Grid with only row "D" and columns "4,5,6" - this is ONE row, not multiple rows
+When you see planning grids or tables:
+1. **Grid Structure**: Row/column labels indicate well positions
+2. **Cell Contents**: Numbers + letters typically show volume + reagent identifier
+3. **Units**: Often specified once, then assumed throughout
+4. **Count Actual Rows**: Only use rows that are explicitly labeled - don't assume missing ones exist
+5. **Handwriting**: Lab notebooks have messy writing - use context to interpret unclear letters
+   - If pattern shows systematic naming, unclear letters likely follow the established pattern
+   - Consider what makes experimental sense given the context
+
+Example interpretation: Grid with row "B", columns "7,8", cells containing "50X, 50Y":
+- This is ONE row (B), TWO columns (7,8)
+- Well B7 gets 50µL of reagent X  
+- Well B8 gets 50µL of reagent Y
+
+Another example: Grid shows row "C", columns "4,5,6,7", one cell says "25µL Buffer1", others say "25B2, 25B3, 25B4":
+- Row C has FOUR columns (4,5,6,7)
+- Well C4 gets 25µL of Buffer1
+- Wells C5,C6,C7 get 25µL of Buffer2, Buffer3, Buffer4 respectively
 
 IMPORTANT REMINDERS:
 - Video is 1 FPS: smooth motion appears as discrete jumps
