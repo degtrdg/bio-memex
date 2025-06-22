@@ -76,6 +76,22 @@ def get_destination_predictions_above_confidence(result, confidence_threshold=0.
     
     return high_confidence_predictions
 
+def select_destination_box_by_position(predictions, position_from_right):
+    """Select a destination box by position from the right (1 = rightmost)."""
+    if not predictions:
+        return []
+    
+    # Sort predictions by x coordinate (right to left)
+    sorted_predictions = sorted(predictions, key=lambda p: p.get('x', 0) if 'x' in p else p.get('bbox', [0])[0], reverse=True)
+    
+    # Select the specified position from the right
+    if position_from_right <= len(sorted_predictions):
+        selected_prediction = sorted_predictions[position_from_right - 1]
+        return [selected_prediction]
+    else:
+        # If position is too large, return the leftmost one (last in sorted list)
+        return [sorted_predictions[-1]] if sorted_predictions else []
+
 def draw_single_bounding_box(image, prediction, color=(0, 255, 0), thickness=2):
     """Draw a single bounding box on the image."""
     # Extract bounding box coordinates (treating x, y as center points)
@@ -99,13 +115,6 @@ def draw_single_bounding_box(image, prediction, color=(0, 255, 0), thickness=2):
     
     # Draw the bounding box
     cv2.rectangle(image, (x, y), (x + w, y + h), color, thickness)
-    
-    # Add label if available
-    if 'class' in prediction:
-        label = prediction['class']
-        confidence = prediction.get('confidence', 0)
-        label_text = f"{label} ({confidence:.2f})"
-        cv2.putText(image, label_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
     
     return True
 
@@ -159,16 +168,16 @@ def draw_combined_annotations(image_path, source_prediction, destination_predict
     
     success_count = 0
     
-    # Draw source bounding box in green
+    # Draw source bounding box in cyan
     if source_prediction:
-        success = draw_single_bounding_box(image, source_prediction, color=(0, 255, 0), thickness=2)
+        success = draw_single_bounding_box(image, source_prediction, color=(255, 255, 0), thickness=2)
         if success:
             success_count += 1
-            print("Drew source bounding box (green)")
+            print("Drew source bounding box (cyan)")
     
-    # Draw destination bounding boxes in red
+    # Draw destination bounding boxes in green
     for prediction in destination_predictions:
-        success = draw_single_bounding_box(image, prediction, color=(255, 0, 0), thickness=2)
+        success = draw_single_bounding_box(image, prediction, color=(0, 255, 0), thickness=2)
         if success:
             success_count += 1
     
@@ -270,7 +279,7 @@ def run_destination_workflow(client, image_path, base_name):
     
     return result, high_confidence_predictions
 
-def main(image_path):
+def main(image_path, position_from_right=1):
     # Ensure data directories exist
     ensure_data_directories()
     
@@ -285,7 +294,15 @@ def main(image_path):
     source_result, source_prediction = run_source_workflow(client, image_path, base_name)
     
     # Run destination workflow
-    destination_result, destination_predictions = run_destination_workflow(client, image_path, base_name)
+    destination_result, all_destination_predictions = run_destination_workflow(client, image_path, base_name)
+    
+    # Select the specific destination box based on position from right
+    destination_predictions = select_destination_box_by_position(all_destination_predictions, position_from_right)
+    
+    if destination_predictions:
+        print(f"Selected destination box at position {position_from_right} from the right")
+    else:
+        print("No destination boxes available to select")
     
     # Draw combined annotations on single image and save to data/annotated directory
     output_path = f"data/annotated/{base_name}_combined_annotated.jpg"
@@ -305,10 +322,29 @@ def main(image_path):
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    if len(args) != 1:
-        print("Usage: python final_label.py <image_path>")
+    if len(args) < 1 or len(args) > 2:
+        print("Usage: python label.py <image_path> [position_from_right]")
+        print("  position_from_right: 1-6 (1 = rightmost, 5 = 5th from right, etc.)")
+        print("  If position is too large, draws the leftmost box")
         sys.exit(1)
+    
     image_path = args[0]
-    results = main(image_path)
+    
+    # Parse position argument (default to 1 if not provided)
+    position_from_right = 1
+    if len(args) == 2:
+        try:
+            position_from_right = int(args[1])
+            if position_from_right < 1:
+                print("Warning: Position must be >= 1, using 1")
+                position_from_right = 1
+        except ValueError:
+            print("Warning: Invalid position, using 1")
+            position_from_right = 1
+    
+    print(f"Processing image: {image_path}")
+    print(f"Selecting destination box at position {position_from_right} from the right")
+    
+    results = main(image_path, position_from_right)
 
 
