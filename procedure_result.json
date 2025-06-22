@@ -1,18 +1,27 @@
 {
-  "thinking": "The user consults a notebook which outlines a pipetting plan. The notebook shows a grid for a 96-well plate with columns '1', '2', '3' and row 'A'. The instructions are to add 30uL of 'Reagent A' to well A1, 30uL of 'Reagent B' to well A2, and 30uL of 'Reagent C' to well A3. The user sets a single-channel pipette to 30 uL (display shows '030'). Following the plan, they use a fresh tip to aspirate liquid from the first microcentrifuge tube (inferred to be Reagent A) and dispense it into well A1. They discard the tip. They then use another fresh tip to aspirate from the second tube (inferred to be Reagent B) and dispense it into well A2. Finally, they use a third fresh tip to aspirate from the third tube (inferred to be Reagent C) and dispense it into well A3, completing the planned transfers.",
+  "thinking": "The user wants me to extract the experimental procedure from the video. The primary source of information is the notebook shown at the beginning (0:01-0:03). The notebook outlines a plan for mixing three reagents in a 96-well plate. I will transcribe the contents of the notebook to determine the goal state for each well. The notebook grid specifies wells A1, A2, and A3. For A1, it lists '30µL A' and '30 B'. For A2, it lists '30µL A' and '30 C'. For A3, it lists '30 B' and '30 C'. I interpret 'A', 'B', and 'C' as distinct reagents. The volume is consistently 30µL for each component. The pipetting actions observed in the rest of the video confirm this plan. The pipette is set to '030', corresponding to 30µL (0:07). The operator then proceeds to pipette liquids into wells A1, A2, and A3, adding two components to each well, which aligns with the notebook's instructions. Therefore, the goal is to create pairwise mixtures of three reagents.",
   "timestamp_range": "0:01 - 1:12",
   "goal_wells": [
     {
       "well_id": "A1",
-      "reagents": [{ "name": "Reagent A", "volume_ul": 30.0 }]
+      "reagents": [
+        { "name": "Reagent A", "volume_ul": 30.0 },
+        { "name": "Reagent B", "volume_ul": 30.0 }
+      ]
     },
     {
       "well_id": "A2",
-      "reagents": [{ "name": "Reagent B", "volume_ul": 30.0 }]
+      "reagents": [
+        { "name": "Reagent A", "volume_ul": 30.0 },
+        { "name": "Reagent C", "volume_ul": 30.0 }
+      ]
     },
     {
       "well_id": "A3",
-      "reagents": [{ "name": "Reagent C", "volume_ul": 30.0 }]
+      "reagents": [
+        { "name": "Reagent B", "volume_ul": 30.0 },
+        { "name": "Reagent C", "volume_ul": 30.0 }
+      ]
     }
   ],
   "reagent_sources": ["Reagent A", "Reagent B", "Reagent C"]
