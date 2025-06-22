@@ -117,8 +117,8 @@ def create_hud_video_opencv(input_video: str, timeline_file: str, output_video: 
     
     print(f"Video: {width}x{height} @ {fps}fps, {total_frames} frames")
     
-    # Create video writer
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    # Create video writer with better codec
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')  # H.264 codec, much more compatible
     out = cv2.VideoWriter(output_video, fourcc, fps, (width, height))
     
     frame_count = 0
