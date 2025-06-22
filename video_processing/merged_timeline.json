@@ -1,7 +1,7 @@
 {
   "procedure_context": {
     "thinking": "The user provided a video showing a pipetting procedure. First, a lab notebook is displayed which dictates the goal state of the experiment. I transcribed the notebook to understand what each well should contain. The notebook specifies a single row 'A' and three columns '1', '2', '3', with volumes in microliters (\u00b5l). Well A1 should contain 30\u00b5L of reagent 'A' and 30\u00b5L of reagent 'B'. Well A2 should contain 30\u00b5L of reagent 'A' and 30\u00b5L of reagent 'C'. Well A3 should contain 30\u00b5L of reagent 'B' and 30\u00b5L of reagent 'C'. The video then shows the execution of this plan. The pipette is set to 30\u00b5L. A clear liquid (inferred as Reagent A) is pipetted into wells A1 and A2. A second clear liquid (inferred as Reagent B) is pipetted into wells A1 and A3. A blue liquid (inferred as Reagent C) is pipetted into wells A2 and A3. The pipetting actions perfectly match the instructions laid out in the notebook.",
-    "timestamp_range": "0:01 - 1:12",
+    "timestamp_range": "0:05 - 1:12",
     "goal_wells": [
       {
         "well_id": "A1",
@@ -43,17 +43,13 @@
         ]
       }
     ],
-    "reagent_sources": [
-      "Reagent A",
-      "Reagent B",
-      "Reagent C"
-    ]
+    "reagent_sources": ["Reagent A", "Reagent B", "Reagent C"]
   },
   "total_events": 28,
   "timeline": [
     {
-      "start_time": 0,
-      "end_time": 4,
+      "start_time": 5,
+      "end_time": 8,
       "event_type": "warning",
       "title": "The workspace is cluttered with food and drink items, which violates standard laboratory safety and contamination protocols.",
       "description": "Cluttered Workspace",
