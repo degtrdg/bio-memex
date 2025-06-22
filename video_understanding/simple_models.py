@@ -24,11 +24,13 @@ class ProcedureExtraction(BaseModel):
     """Overall protocol/procedure extracted from video"""
 
     thinking: str = Field(
-        ..., description="Detailed reasoning about what procedure was observed"
+        ...,
+        description="Detailed reasoning what you read about the procedure or if not available from watching the entire video",
     )
 
     timestamp_range: str = Field(
-        ..., description="Time range analyzed (e.g., '0:29 - 0:32')"
+        ...,
+        description="Time range where the procedure was observed (e.g., '0:29 - 0:32')",
     )
 
     goal_wells: List[Well] = Field(..., description="Target end state for each well")
@@ -103,17 +105,25 @@ class WellStateEvent(BaseModel):
     timestamp_range: str = Field(..., description="When state changed")
     well_id: str = Field(..., description="Well position (e.g., 'A1', 'B2')")
     is_complete: bool = Field(..., description="Whether well is now complete")
-    current_contents: List[Reagent] = Field(..., description="Current reagents in the well")
-    missing_reagents: List[Reagent] = Field(..., description="Reagents still needed to complete the well")
+    current_contents: List[Reagent] = Field(
+        ..., description="Current reagents in the well"
+    )
+    missing_reagents: List[Reagent] = Field(
+        ..., description="Reagents still needed to complete the well"
+    )
 
 
 class ObjectiveEventsList(BaseModel):
     """Wrapper for list of objective events"""
 
+    thinking: str = Field(..., description="Reasoning about the objective events")
     events: List[
         Union[PipetteSettingChange, AspirationEvent, DispensingEvent, TipChangeEvent]
     ] = Field(..., description="List of objective events extracted from video")
 
 
 class AnalysisEventsResult(BaseModel):
+    """Wrapper for list of analysis events"""
+
+    thinking: str = Field(..., description="Reasoning about the analysis events")
     events: List[Union[WarningEvent, WellStateEvent]] = []

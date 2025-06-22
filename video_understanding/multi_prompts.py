@@ -21,7 +21,6 @@ def create_procedure_extraction_prompt() -> tuple[str, str]:
 You are analyzing a laboratory video recorded at 1 FPS to understand the overall experimental procedure and goals. Since the video is sampled at 1 FPS, you need to make educated interpolations between frames, but be careful not to hallucinate events that aren't clearly supported by visual evidence.
 
 KEY CONSTRAINTS:
-- Video is captured at 1 FPS, so motion appears as discrete steps
 - Make reasonable inferences about what happens between frames
 - Only describe what you can clearly observe or reasonably infer
 
@@ -33,9 +32,8 @@ Analyze the entire video to understand:
    - If there is no notebook, transcribe what you see in the video
 
 LAB NOTEBOOK INTERPRETATION:
-- **Cells can contain MULTIPLE reagents** - look for comma-separated or space-separated entries
+- **Use the column and row labels to determine the number of wells** - anything inside the grid is a well even if there's multiple reagents in the cell.
 - **Reagent names can have single letters** (C, D, E, etc.)
-- **Count only visible rows** - don't assume missing ones exist
 - **Units specified once apply throughout**
 - **Poor handwriting** - use context and patterns to interpret unclear letters
 
@@ -54,7 +52,9 @@ OUTPUT: Provide ProcedureExtraction with your analysis of the overall experiment
     return system_prompt, user_prompt
 
 
-def create_objective_events_prompt(procedure_result: ProcedureExtraction) -> tuple[str, str]:
+def create_objective_events_prompt(
+    procedure_result: ProcedureExtraction,
+) -> tuple[str, str]:
     """
     SECOND PROMPT: Extract core objective events (pipette settings, aspirations, dispensing, tip changes).
     Uses procedure context from first prompt.
@@ -200,11 +200,7 @@ WARNING DETECTION:
 - Environment/General (report ONCE at beginning only):
   * Check workspace setup and lighting conditions
   * Note any general procedural concerns
-- Technical issues:
-  * Look for visible air bubbles in tips
-  * Check for volume mismatches (pipette setting vs. actual transfer)
-  * Note any liquid handling errors
-- Contamination risks (critical for accuracy):
+- IMPORTANT: Contamination risks (critical for accuracy):
   * Analyze the OBJECTIVE EVENTS timeline to identify contamination patterns
   * Look for tip reuse between different reagents without tip changes
   * Track when tips that contained one reagent are used for another reagent
@@ -233,6 +229,7 @@ IMPORTANT REMINDERS:
 - Track contamination carefully - this is critical for experimental validity
 - Don't create false positives
 - Use specific timestamp intervals to avoid HUD noise since these events will be displayed alongside other events
+- REASON HEAVILY on the objective events + the events you've made so far to check for pipette contamination
 
 OUTPUT: Return lists of WarningEvent and WellStateEvent objects for all detected issues and state changes. Include both partial completions (is_complete=false) and final completions (is_complete=true) for comprehensive tracking.
 - WarningEvent objects must include both warning_message and description fields
