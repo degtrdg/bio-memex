@@ -28,52 +28,26 @@ KEY CONSTRAINTS:
 YOUR TASK:
 Analyze the entire video to understand:
 
-1. OVERALL PROCEDURE: What is the person trying to accomplish?
-   - What type of experimental protocol is this?
-   - What is the general workflow and sequence of steps?
-   - What reagents and containers are being used?
-
-2. GOAL STATE: What should each well/container contain when complete?
-   - Identify all target wells/containers
-   - Determine what reagents should go into each one
-   - Use written procedures if they are given
-
-3. REAGENT SOURCES: What reagent sources are available?
-   - List all visible reagent containers if given
-
-ANALYSIS APPROACH:
-- Watch the full video to understand the complete workflow
-- Pay attention to volume settings on pipettes (visible on displays)
-- Note container positions and movements
-- Track liquid transfers and their destinations
-- Consider the logical flow of the experimental procedure
+1. GOAL STATE: What should each well/container contain when complete?
+   - If there is a notebook, transcribe what each cell in the notebook says for each well position
+   - If there is no notebook, transcribe what you see in the video
 
 LAB NOTEBOOK INTERPRETATION:
-When you see planning grids or tables:
-1. **Grid Structure**: Row/column labels indicate well positions
-2. **Cell Contents**: Numbers + letters typically show volume + reagent identifier
-3. **Units**: Often specified once, then assumed throughout
-4. **Count Actual Rows**: Only use rows that are explicitly labeled - don't assume missing ones exist
-5. **Handwriting**: Lab notebooks have messy writing - use context to interpret unclear letters
-   - If pattern shows systematic naming, unclear letters likely follow the established pattern
-   - Consider what makes experimental sense given the context
+- **Cells can contain MULTIPLE reagents** - look for comma-separated or space-separated entries
+- **Reagent names can have single letters** (C, D, E, etc.)
+- **Count only visible rows** - don't assume missing ones exist
+- **Units specified once apply throughout**
+- **Poor handwriting** - use context and patterns to interpret unclear letters
 
-Example interpretation: Grid with row "B", columns "7,8", cells containing "50X, 50Y":
-- This is ONE row (B), TWO columns (7,8)
-- Well B7 gets 50µL of reagent X  
-- Well B8 gets 50µL of reagent Y
+Example: Row "B", columns "1,2,3", cells contain "20X 20Y", "20X 20Z", "20Y 20Z":
+- Well B1 gets 20µL of reagent X + 20µL of reagent Y
+- Well B2 gets 20µL of reagent X + 20µL of reagent Z
+- Well B3 gets 20µL of reagent Y + 20µL of reagent Z
 
-Another example: Grid shows row "C", columns "4,5,6,7", one cell says "25µL Buffer1", others say "25B2, 25B3, 25B4":
-- Row C has FOUR columns (4,5,6,7)
-- Well C4 gets 25µL of Buffer1
-- Wells C5,C6,C7 get 25µL of Buffer2, Buffer3, Buffer4 respectively
-
-IMPORTANT REMINDERS:
-- Video is 1 FPS: smooth motion appears as discrete jumps
-- Make educated guesses about continuous actions between frames
-- Don't invent events - only describe what's clearly visible or logically inferred
-- Focus on the experimental goals and overall procedure structure
-- When interpreting notebooks: table headers are well positions, cell contents are what goes in those wells
+CRITICAL INSTRUCTION:
+- If you're given a notebook grid, transcribe exactly what's written in each cell
+- Column 1 = well X1, Column 2 = well X2, Column 3 = well X3 (read left to right)
+- The video shows HOW they executed it, the notebook shows WHAT the end result should be
 
 OUTPUT: Provide ProcedureExtraction with your analysis of the overall experimental procedure.""".strip()
 
