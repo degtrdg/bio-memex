@@ -1,55 +1,67 @@
 {
   "events": [
     {
-      "thinking": "The workspace is cluttered with numerous open soda cans, paper cups, and personal electronics placed in close proximity to the experimental materials. This poses a significant risk of spills and cross-contamination, which is contrary to good laboratory practice.",
-      "timestamp_range": "00:00 - 01:12",
-      "warning_message": "Workspace cluttered with food, drinks, and personal items, increasing contamination risk."
+      "thinking": "The user's workspace is cluttered with several beverage containers (soda cans, paper cups) in close proximity to the experimental materials, including the well plate and pipette tips. This constitutes poor lab practice and increases the risk of accidental spills and contamination of the experiment.",
+      "timestamp_range": "0:00 - 1:12",
+      "warning_message": "Workspace Clutter and Contamination Risk",
+      "description": "Drinks on bench near experiment"
     },
     {
-      "thinking": "The documented plan in the notebook requires two additions for each reagent (A, B, and C) to complete wells A1, A2, and A3. However, the objective events log shows the operator performing four dispenses for each reagent. This indicates a significant, undocumented deviation from the written experimental protocol.",
-      "timestamp_range": "00:13 - 01:11",
-      "warning_message": "Procedural Deviation: The number of reagent dispenses (4 for each) exceeds the number specified in the notebook protocol (2 for each)."
-    },
-    {
-      "thinking": "During multiple dispensing steps, the pipette is held at a noticeable angle relative to the well plate. Proper technique involves holding the pipette vertically to ensure the full volume is dispensed accurately against the wall of the well and to minimize aerosol formation or splashing.",
-      "timestamp_range": "00:13 - 01:11",
-      "warning_message": "Improper Pipetting Angle: Pipette held at an angle during dispensing, which can affect volume accuracy."
-    },
-    {
-      "thinking": "Reagent A is dispensed into well A1. According to the protocol, this well requires both Reagent A and Reagent B. It is now partially complete.",
-      "timestamp_range": "00:13 - 00:14",
+      "thinking": "The user dispenses the first reagent, 30µl of 'A', into well A1. According to the plan, this well still needs 30µl of reagent 'B' to be complete.",
+      "timestamp_range": "0:14 - 0:16",
       "well_id": "A1",
-      "is_complete": false
+      "is_complete": false,
+      "current_contents": [{ "name": "A", "volume_ul": 30.0 }],
+      "missing_reagents": [{ "name": "B", "volume_ul": 30.0 }]
     },
     {
-      "thinking": "Reagent A is dispensed into well A2. According to the protocol, this well requires both Reagent A and Reagent C. It is now partially complete.",
-      "timestamp_range": "00:15 - 00:17",
+      "thinking": "The user dispenses the first reagent, 30µl of 'A', into well A2. According to the plan, this well still needs 30µl of reagent 'C' to be complete.",
+      "timestamp_range": "0:20 - 0:22",
       "well_id": "A2",
-      "is_complete": false
+      "is_complete": false,
+      "current_contents": [{ "name": "A", "volume_ul": 30.0 }],
+      "missing_reagents": [{ "name": "C", "volume_ul": 30.0 }]
     },
     {
-      "thinking": "Reagent B is dispensed into well A1, which already contains Reagent A. This completes the target composition for this well (Reagent A + Reagent B).",
-      "timestamp_range": "00:37 - 00:39",
+      "thinking": "The user adds 30µl of reagent 'B' to well A1, which already contains 30µl of reagent 'A'. The well now contains all required reagents as per the experimental plan and is considered complete.",
+      "timestamp_range": "0:37 - 0:38",
       "well_id": "A1",
-      "is_complete": true
+      "is_complete": true,
+      "current_contents": [
+        { "name": "A", "volume_ul": 30.0 },
+        { "name": "B", "volume_ul": 30.0 }
+      ],
+      "missing_reagents": []
     },
     {
-      "thinking": "Reagent B is dispensed into well A3. According to the protocol, this well requires both Reagent B and Reagent C. It is now partially complete.",
-      "timestamp_range": "00:42 - 00:44",
+      "thinking": "The user dispenses the first reagent, 30µl of 'B', into well A3. According to the plan, this well still needs 30µl of reagent 'C' to be complete.",
+      "timestamp_range": "0:41 - 0:43",
       "well_id": "A3",
-      "is_complete": false
+      "is_complete": false,
+      "current_contents": [{ "name": "B", "volume_ul": 30.0 }],
+      "missing_reagents": [{ "name": "C", "volume_ul": 30.0 }]
     },
     {
-      "thinking": "Reagent C is dispensed into well A2, which already contains Reagent A. This completes the target composition for this well (Reagent A + Reagent C).",
-      "timestamp_range": "00:58 - 01:00",
+      "thinking": "The user adds 30µl of reagent 'C' to well A2, which already contains 30µl of reagent 'A'. The well now contains all required reagents as per the experimental plan and is considered complete.",
+      "timestamp_range": "0:56 - 0:58",
       "well_id": "A2",
-      "is_complete": true
+      "is_complete": true,
+      "current_contents": [
+        { "name": "A", "volume_ul": 30.0 },
+        { "name": "C", "volume_ul": 30.0 }
+      ],
+      "missing_reagents": []
     },
     {
-      "thinking": "Reagent C is dispensed into well A3, which already contains Reagent B. This completes the target composition for this well (Reagent B + Reagent C).",
-      "timestamp_range": "01:02 - 01:04",
+      "thinking": "The user adds 30µl of reagent 'C' to well A3, which already contains 30µl of reagent 'B'. The well now contains all required reagents as per the experimental plan and is considered complete.",
+      "timestamp_range": "1:00 - 1:03",
       "well_id": "A3",
-      "is_complete": true
+      "is_complete": true,
+      "current_contents": [
+        { "name": "B", "volume_ul": 30.0 },
+        { "name": "C", "volume_ul": 30.0 }
+      ],
+      "missing_reagents": []
     }
   ]
 }
