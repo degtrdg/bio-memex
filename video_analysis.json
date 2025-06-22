@@ -1,0 +1,80 @@
+{
+  "extracted_protocol": {
+    "thinking": "The user is performing a basic liquid transfer protocol using an ONiLAB 50-200\u00b5l micropipette. The procedure involves transferring a yellow liquid from a paper cup into test tubes. The video captures two separate transfer events. Notably, the user consistently sets the pipette to volumes (30\u00b5l and 20\u00b5l) that are far outside its specified operational range, which is a critical procedural error that compromises accuracy and risks damaging the instrument. The second transfer attempt also includes a common technique error (aspirating an air bubble), which the user identifies and corrects.",
+    "title": "Micropipette Liquid Transfer Practice",
+    "objective": "preparation"
+  },
+  "pipette_operations": [
+    {
+      "thinking": "The user aspirates the first sample from the source cup. The pipette is set to '030', which on this P200 model represents 30\u00b5l. This volume is below the pipette's minimum specified volume of 50\u00b5l.",
+      "timestamp": 15.2,
+      "operation_type": "aspirate",
+      "source_destination": "Paper cup with yellow liquid",
+      "amount": "30\u00b5l",
+      "warnings": [
+        {
+          "thinking": "The selected volume of 30\u00b5l is outside the manufacturer's specified operational range for a 50-200\u00b5l pipette. Using a pipette outside its range leads to significant measurement inaccuracy and can cause permanent damage to the piston and sealing mechanism.",
+          "severity": "danger",
+          "message": "Pipette volume (30\u00b5l) is outside the 50-200\u00b5l operational range. Results will be inaccurate and the instrument may be damaged."
+        }
+      ]
+    },
+    {
+      "thinking": "The user dispenses the 30\u00b5l sample into a test tube. The action is completed and the tip is subsequently ejected.",
+      "timestamp": 18.1,
+      "operation_type": "dispense",
+      "source_destination": "Test tube",
+      "amount": "30\u00b5l",
+      "warnings": []
+    },
+    {
+      "thinking": "For the second transfer, the user has set the volume to '020' (20\u00b5l). During aspiration, the tip is not kept sufficiently submerged, causing a large air bubble to be drawn into the tip along with the liquid. This invalidates the measurement.",
+      "timestamp": 47.8,
+      "operation_type": "aspirate",
+      "source_destination": "Paper cup with yellow liquid",
+      "amount": "20\u00b5l",
+      "warnings": [
+        {
+          "thinking": "The aspiration of air indicates a technique error. This will result in transferring a significantly smaller volume of liquid than intended.",
+          "severity": "warning",
+          "message": "Procedural Error: Air was aspirated into the pipette tip. The volume is incorrect."
+        },
+        {
+          "thinking": "The set volume of 20\u00b5l is even further outside the pipette's 50-200\u00b5l range than the previous attempt, compounding the risk of inaccuracy and instrument damage.",
+          "severity": "danger",
+          "message": "Pipette volume (20\u00b5l) is outside the 50-200\u00b5l operational range. Results will be inaccurate and the instrument may be damaged."
+        }
+      ]
+    },
+    {
+      "thinking": "Realizing the error, the user expels the incorrectly aspirated sample (liquid and air) back into the source container to discard it before re-attempting the aspiration.",
+      "timestamp": 50.5,
+      "operation_type": "dispense",
+      "source_destination": "Paper cup with yellow liquid",
+      "amount": null,
+      "warnings": []
+    },
+    {
+      "thinking": "The user now re-attempts the aspiration with the tip properly submerged, successfully drawing the liquid without a major air bubble. The critical issue of the volume setting being out of range persists.",
+      "timestamp": 54.3,
+      "operation_type": "aspirate",
+      "source_destination": "Paper cup with yellow liquid",
+      "amount": "20\u00b5l",
+      "warnings": [
+        {
+          "thinking": "Although the aspiration technique was corrected, the volume is still set to 20\u00b5l on a 50-200\u00b5l pipette, meaning the transferred volume will be highly inaccurate.",
+          "severity": "danger",
+          "message": "Pipette volume (20\u00b5l) is outside the 50-200\u00b5l operational range. Accuracy is compromised."
+        }
+      ]
+    },
+    {
+      "thinking": "The user dispenses the second, correctly aspirated (but inaccurately measured) sample into a clean test tube located in the red rack.",
+      "timestamp": 100.5,
+      "operation_type": "dispense",
+      "source_destination": "Test tube in red rack",
+      "amount": "20\u00b5l",
+      "warnings": []
+    }
+  ]
+}
