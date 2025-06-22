@@ -50,11 +50,32 @@ ANALYSIS APPROACH:
 - Track liquid transfers and their destinations
 - Consider the logical flow of the experimental procedure
 
+LAB NOTEBOOK INTERPRETATION:
+When analyzing lab notebooks or planning sheets:
+- OBSERVE EXACTLY what's written - don't extrapolate beyond what's visible
+- Count actual row/column labels present, don't assume standard patterns
+- Symbols can have multiple meanings - letters might be both positional labels AND reagent names
+- Scientists use abbreviated notation after establishing context:
+  * Full specification given once, then shortened forms used
+  * Units often specified once and assumed to apply throughout
+  * Context from earlier parts of the notebook informs later shorthand
+- Grid structure: headers typically indicate positions, cell contents indicate what goes there
+- Focus on the logical mapping between positions and contents as written
+- Don't fill in "missing" rows or columns that aren't explicitly shown
+- HANDWRITING INTERPRETATION: Lab notebooks often have unclear handwriting
+  * Make reasonable assumptions based on established patterns and context
+  * Consider experimental logic - scientists typically use systematic naming schemes
+  * Cross-reference with other parts of the notebook for consistency
+  * When letters are ambiguous, choose the interpretation that fits the established pattern
+- Example: If notebook shows "10mM Buffer X" at top, then grid cells contain "10X", this means "10mM of Buffer X"
+- Another example: Grid with only row "D" and columns "4,5,6" - this is ONE row, not multiple rows
+
 IMPORTANT REMINDERS:
 - Video is 1 FPS: smooth motion appears as discrete jumps
 - Make educated guesses about continuous actions between frames
 - Don't invent events - only describe what's clearly visible or logically inferred
 - Focus on the experimental goals and overall procedure structure
+- When interpreting notebooks: table headers are well positions, cell contents are what goes in those wells
 
 OUTPUT: Provide ProcedureExtraction with your analysis of the overall experimental procedure.""".strip()
 
@@ -76,11 +97,17 @@ You are analyzing the same laboratory video to identify specific pipetting event
 CONTEXT FROM PROCEDURE ANALYSIS:
 {procedure_context}
 
+CRITICAL: The procedure context above represents the INTENDED protocol. When visual details are unclear, TRUST the procedure and use logical reasoning to determine what must be happening.
+
 KEY CONSTRAINTS:
-- Video is captured at 1 FPS - actions appear as discrete steps
+- Video is captured at 1 FPS so you have to make educated interpolations between frames based on what's happened so far and the procedure context
 - Make reasonable inferences about what happens between frames
 - Only report events you can clearly observe or confidently infer
-- Provide precise timestamp ranges for each event
+- Provide precise timestamp ranges for each event (be as specific as possible with timing since these events will be displayed as a HUD with other events)
+- When unsure about tube selection, use the procedure context and logical inference:
+  * If you've already used tube A, and the procedure calls for reagent B next, you're likely using tube B
+  * The procedure sequence is your primary guide for determining reagent sources
+- Double-check destination wells against the procedure - visual angles can be deceiving
 
 YOUR TASK:
 Identify ALL instances of these specific events:
@@ -111,11 +138,18 @@ ANALYSIS APPROACH:
 - Note container interactions and liquid transfers
 - Use the procedure context to understand the purpose of each action
 
+REASONING APPROACH:
+- When identifying tube/reagent sources: Use procedure sequence + visual confirmation
+- When visual cues conflict with procedure: Trust the procedure and explain your reasoning
+- When determining destinations: Cross-reference visual observation with procedure requirements
+- Apply logical deduction: If you can't see which tube is being used, infer from the procedure sequence and previous actions
+
 IMPORTANT REMINDERS:
 - Video is 1 FPS: make educated interpolations between frames
 - Don't hallucinate events - only report what's clearly visible
-- Provide timestamp ranges, not just single timestamps
+- Provide timestamp ranges, not just single timestamps (be as specific as possible with timing since these events will be displayed as a HUD with other events)
 - Focus on the mechanical actions, not their interpretation
+- When in doubt about locations/sources, defer to the procedure context
 
 OUTPUT: Return a list containing all detected events of the four types above. Return an empty list if no events of a particular type are found."""
 
@@ -145,6 +179,7 @@ KEY CONSTRAINTS:
 - Only report issues you can clearly observe
 - Track actual completion status based on what you see
 - Be conservative - don't create false warnings
+- Provide specific timestamp intervals for events since they will be displayed as a HUD with other events
 
 YOUR TASK:
 Identify instances of these analysis events:
@@ -183,6 +218,7 @@ IMPORTANT REMINDERS:
 - Be conservative with warnings - only report clear issues
 - Base completion status on observable evidence
 - Don't create false positives
+- Use specific timestamp intervals to avoid HUD noise since these events will be displayed alongside other events
 
 OUTPUT: Return lists of WarningEvent and WellStateEvent objects for all detected issues and state changes."""
 
