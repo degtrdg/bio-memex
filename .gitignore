@@ -2,3 +2,8 @@
 .DS_Store
 videos/full_fps/
 **/__pycache__/
+full_fps.zip
+/batch_cache/
+debug_batch_*.txt
+*.mp4
+*.mov

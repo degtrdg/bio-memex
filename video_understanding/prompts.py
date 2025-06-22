@@ -1,9 +1,15 @@
-def create_stateful_prompt(current_goal_state, current_current_state, current_protocol_log, current_warnings):
+def create_stateful_prompt(
+    current_goal_state,
+    current_current_state,
+    current_protocol_log,
+    current_warnings,
+    batch_size,
+):
     """Creates a prompt with current state variables"""
-    
+
     prompt = f"""LAB COPILOT - REAL-TIME PROCEDURE INTERPRETATION
 
-You are a lab copilot helping interpret an ongoing laboratory procedure. You're seeing a snapshot of what's happening right now through 5 consecutive frames.
+You are a lab copilot helping interpret an ongoing laboratory procedure to aspirate from tubes and dispense reagents into wells. You're seeing a snapshot of what's happening right now through {batch_size} consecutive frames.
 
 CURRENT STATE (what you know so far):
 - Goal State: {current_goal_state if current_goal_state else "Not yet defined"}
@@ -12,7 +18,7 @@ CURRENT STATE (what you know so far):
 - Active Warnings: {current_warnings if current_warnings else "No current warnings"}
 
 YOUR ROLE:
-You're in the middle of helping with a task. Analyze these 5 frames to understand what the person is doing right now and update your knowledge accordingly.
+You're in the middle of helping with a task. Analyze these {batch_size} frames to understand what the person is doing right now and update your knowledge accordingly.
 
 Use the triggered flags to indicate what aspects of your understanding need updating:
 
@@ -42,7 +48,7 @@ Use the triggered flags to indicate what aspects of your understanding need upda
    - Leave warnings_triggered=False if everything looks normal
 
 FRAME INTERPRETATION:
-- Look across the 5 frames to see the progression of their actions
+- Look across the {batch_size} frames to see the progression of their actions
 - Focus on what changed: pipette position, liquid movement, container interactions
 - Try to understand the intent behind their actions
 
@@ -52,6 +58,6 @@ IMPORTANT:
 - If triggered=False, leave that field as None
 - Base everything on what you can directly observe
 
-OUTPUT: Return SimpleVideoAnalysis with appropriate triggered flags set."""
+OUTPUT: Return VideoAnalysis with appropriate triggered flags set."""
 
     return prompt
