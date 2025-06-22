@@ -3,7 +3,7 @@ Multi-stage prompts for needle-in-haystack video analysis.
 Each prompt focuses on specific event types and builds on previous results.
 """
 
-from typing import List, Optional
+from typing import Optional
 
 from .simple_models import *
 
@@ -54,7 +54,7 @@ OUTPUT: Provide ProcedureExtraction with your analysis of the overall experiment
     return system_prompt, user_prompt
 
 
-def create_objective_events_prompt(procedure_context: str) -> tuple[str, str]:
+def create_objective_events_prompt(procedure_result: ProcedureExtraction) -> tuple[str, str]:
     """
     SECOND PROMPT: Extract core objective events (pipette settings, aspirations, dispensing, tip changes).
     Uses procedure context from first prompt.
@@ -62,12 +62,15 @@ def create_objective_events_prompt(procedure_context: str) -> tuple[str, str]:
 
     system_prompt = """You are an expert laboratory analyst specializing in detailed pipetting event detection. You identify specific pipetting actions and equipment operations with precise timing."""
 
+    procedure_json = procedure_result.model_dump_json(indent=2)
     user_prompt = f"""OBJECTIVE EVENTS DETECTION TASK
 
 You are analyzing the same laboratory video to identify specific pipetting events. The video is recorded at 1 FPS, so you need to make educated interpolations between frames while being careful not to hallucinate.
 
 CONTEXT FROM PROCEDURE ANALYSIS:
-{procedure_context}
+```json
+{procedure_json}
+```
 
 CRITICAL: The procedure context above represents the INTENDED protocol. When visual details are unclear, TRUST the procedure and use logical reasoning to determine what must be happening.
 
@@ -129,7 +132,7 @@ OUTPUT: Return a list containing all detected events of the four types above. Re
 
 
 def create_analysis_events_prompt(
-    procedure_context: str, objective_events: str
+    procedure_result: ProcedureExtraction, objective_events_result: ObjectiveEventsList
 ) -> tuple[str, str]:
     """
     THIRD PROMPT: Extract analysis events (warnings, well state changes).
@@ -138,13 +141,23 @@ def create_analysis_events_prompt(
 
     system_prompt = """You are an expert laboratory quality control specialist. You identify experimental warnings, errors, and track the completion status of experimental procedures."""
 
+    procedure_json = procedure_result.model_dump_json(indent=2)
+    objective_events_json = objective_events_result.model_dump_json(indent=2)
     user_prompt = f"""ANALYSIS EVENTS DETECTION TASK
 
 You are analyzing the same laboratory video to identify warnings and track experimental progress. The video is recorded at 1 FPS, requiring educated interpolations between frames.
 
 CONTEXT FROM PREVIOUS ANALYSIS:
-PROCEDURE: {procedure_context}
-OBJECTIVE EVENTS: {objective_events}
+
+PROCEDURE:
+```json
+{procedure_json}
+```
+
+OBJECTIVE EVENTS:
+```json
+{objective_events_json}
+```
 
 KEY CONSTRAINTS:
 - Video is captured at 1 FPS - make reasonable inferences between frames
@@ -226,35 +239,3 @@ OUTPUT: Return lists of WarningEvent and WellStateEvent objects for all detected
 - WellStateEvent objects must include current_contents and missing_reagents fields"""
 
     return system_prompt, user_prompt
-
-
-# Helper function to format context for subsequent prompts
-def format_procedure_context(procedure_result: ProcedureExtraction) -> str:
-    """Format procedure extraction result for use in subsequent prompts"""
-    return f"""
-THINKING: {procedure_result.thinking}
-TIMESTAMP RANGE: {procedure_result.timestamp_range}
-GOAL WELLS: {[f"{w.well_id}: {[f'{r.name} ({r.volume_ul}µl)' for r in w.reagents]}" for w in procedure_result.goal_wells]}
-REAGENT SOURCES: {procedure_result.reagent_sources}
-""".strip()
-
-
-def format_objective_events_context(events: List) -> str:
-    """Format objective events for use in analysis prompt"""
-    event_summaries = []
-    for event in events:
-        if hasattr(event, "new_setting_ul"):
-            event_summaries.append(
-                f"Pipette setting changed to {event.new_setting_ul}µl at {event.timestamp_range}"
-            )
-        elif hasattr(event, "reagent_name"):
-            event_summaries.append(
-                f"Aspirated {event.reagent_name} at {event.timestamp_range}"
-            )
-        elif hasattr(event, "reagent"):
-            event_summaries.append(
-                f"Dispensed {event.reagent.name} ({event.reagent.volume_ul}µl) at {event.timestamp_range}"
-            )
-        else:
-            event_summaries.append(f"Tip change at {event.timestamp_range}")
-    return "\n".join(event_summaries)
