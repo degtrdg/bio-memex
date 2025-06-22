@@ -93,6 +93,7 @@ class WarningEvent(BaseModel):
     thinking: str = Field(..., description="Reasoning about the warning")
     timestamp_range: str = Field(..., description="When warning occurred")
     warning_message: str = Field(..., description="What the warning is about")
+    description: str = Field(..., description="Short description for HUD display")
 
 
 class WellStateEvent(BaseModel):
@@ -102,3 +103,17 @@ class WellStateEvent(BaseModel):
     timestamp_range: str = Field(..., description="When state changed")
     well_id: str = Field(..., description="Well position (e.g., 'A1', 'B2')")
     is_complete: bool = Field(..., description="Whether well is now complete")
+    current_contents: List[Reagent] = Field(..., description="Current reagents in the well")
+    missing_reagents: List[Reagent] = Field(..., description="Reagents still needed to complete the well")
+
+
+class ObjectiveEventsList(BaseModel):
+    """Wrapper for list of objective events"""
+
+    events: List[
+        Union[PipetteSettingChange, AspirationEvent, DispensingEvent, TipChangeEvent]
+    ] = Field(..., description="List of objective events extracted from video")
+
+
+class AnalysisEventsResult(BaseModel):
+    events: List[Union[WarningEvent, WellStateEvent]] = []
