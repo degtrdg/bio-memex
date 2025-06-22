@@ -1,3 +1,9 @@
+
+label/data/
+
+.DS_Store
+*/.DS_Store
+
 .env
 .DS_Store
 videos/full_fps/
