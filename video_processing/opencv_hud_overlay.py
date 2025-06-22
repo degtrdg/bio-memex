@@ -230,11 +230,11 @@ def create_hud_video_opencv(input_video, timeline_json, output_video):
             )
 
             # ---------- DESCRIPTION ----------
-            desc_scale = 1.5  # 1.2 × 1.25
+            desc_scale = 1  # 1.2 × 1.25
             max_width = int(W * 0.7)  # wrap width (70 % of frame)
             start_x = (W - max_width) // 2
             start_y = header_y + 80  # a bit below the header
-            desc_txt = _clean(top["event_model"].get("description", ""))
+            desc_txt = _clean(top.get("title", ""))
 
             info_box(img, desc_txt, start_x, start_y, max_width, desc_scale)
 
