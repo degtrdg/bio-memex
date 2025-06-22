@@ -183,9 +183,9 @@ def create_hud_video(
         # Get thinking commentary for left side
         thinking_text = event.get("event_model", {}).get("thinking", "")
         thinking_clean = thinking_text.replace("'", "").replace(":", " ").replace(";", " ").replace("μ", "u")
-        # Truncate thinking to keep it readable in a fixed box
-        if len(thinking_clean) > 120:
-            thinking_clean = thinking_clean[:117] + "..."
+        # Limit length for sidebar display
+        if len(thinking_clean) > 150:
+            thinking_clean = thinking_clean[:147] + "..."
         
         # Create main HUD text (no manual newlines - use separate filters)
         main_text_only = main_clean
@@ -215,11 +215,10 @@ def create_hud_video(
             main_filter += f":x=(w-text_w)/2:y={detail_y}"
             main_filter += f":enable='between(t,{start_time},{end_time})'"
         
-        # Add thinking commentary on left side in a proper box if it exists
+        # Add thinking commentary on left side if it exists
         if thinking_clean and thinking_clean.strip():
-            # Position the commentary box vertically centered on left side
-            commentary_y = "(h-200)/2"  # Center vertically, assuming ~200px box height
-            commentary_width = "400"    # Fixed width
+            # Position the commentary box on left side
+            commentary_y = 200  # Start position from top
             
             if detail_clean:
                 main_filter += f"[temp{i}b];[temp{i}b]"
@@ -227,10 +226,9 @@ def create_hud_video(
                 main_filter += f"[temp{i}];[temp{i}]"
             
             main_filter += f"drawtext=text='{thinking_clean}'"
-            main_filter += f":fontcolor=lightgray:fontsize=20:fontfile=/System/Library/Fonts/Menlo.ttc"
+            main_filter += f":fontcolor=gray:fontsize=18:fontfile=/System/Library/Fonts/Menlo.ttc"
             main_filter += f":box=1:boxcolor=black@0.85:boxborderw=4"
-            main_filter += f":x=30:y={commentary_y}"  # Left side, 30px from edge
-            main_filter += f":text_w={commentary_width}"  # Fixed width for text wrapping
+            main_filter += f":x=30:y={commentary_y}"  # Left side position
             main_filter += f":enable='between(t,{start_time},{end_time})'"
         
         main_filter += output_label
