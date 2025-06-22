@@ -25,40 +25,50 @@ from video_understanding.simple_models import (
 )
 
 
-def create_enhanced_event_text(event: Dict) -> str:
-    """Create enhanced event text using BaseModel data"""
+def create_enhanced_event_text(event: Dict) -> Tuple[str, str, int]:
+    """Create enhanced event text using BaseModel data
+    Returns: (main_text, detail_text, font_size)
+    """
     event_model_type = event.get("event_model_type")
     event_model = event.get("event_model", {})
     
     if event_model_type == "AspirationEvent":
         reagent = event_model.get("reagent", {})
-        return f"↑ {reagent.get('name', 'Unknown')} ({reagent.get('volume_ul', 0)}μL)"
+        reagent_name = reagent.get('name', 'Unknown').replace('Reagent ', '')
+        volume = reagent.get('volume_ul', 0)
+        return f"ASPIRATING {reagent_name}", f"{volume}μL", 48
     
     elif event_model_type == "DispensingEvent":
         reagent = event_model.get("reagent", {})
-        return f"↓ {reagent.get('name', 'Unknown')} ({reagent.get('volume_ul', 0)}μL)"
+        reagent_name = reagent.get('name', 'Unknown').replace('Reagent ', '')
+        volume = reagent.get('volume_ul', 0)
+        return f"DISPENSING {reagent_name}", f"{volume}μL", 48
     
     elif event_model_type == "WellStateEvent":
         well_id = event_model.get("well_id", "?")
         is_complete = event_model.get("is_complete", False)
         contents = event_model.get("current_contents", [])
-        reagent_names = [r.get("name", "?") for r in contents]
-        status = "✓" if is_complete else "..."
-        return f"{well_id}: {'+'.join(reagent_names)} {status}"
+        reagent_names = [r.get("name", "?").replace('Reagent ', '') for r in contents]
+        
+        if is_complete:
+            return f"WELL {well_id} COMPLETE", f"Contains: {' + '.join(reagent_names)}", 42
+        else:
+            return f"WELL {well_id} PARTIAL", f"Added: {' + '.join(reagent_names)}", 42
     
     elif event_model_type == "PipetteSettingChange":
         volume = event_model.get("new_setting_ul", 0)
-        return f"⚙ {volume}μL"
+        return f"PIPETTE SET", f"{volume}μL", 36
     
     elif event_model_type == "WarningEvent":
         warning = event_model.get("warning_message", "Warning")
-        return f"⚠ {warning}"
+        description = event_model.get("description", "")
+        return f"WARNING", description or warning[:40], 44
     
     elif event_model_type == "TipChangeEvent":
-        return "🔄 Tip"
+        return f"TIP CHANGE", "New tip attached", 36
     
     else:
-        return event.get("title", "Event")
+        return event.get("title", "Event"), "", 36
 
 
 def create_hud_video(
@@ -96,67 +106,130 @@ def create_hud_video(
         print("No events to overlay")
         return
     
-    # Build complex filter with multiple drawtext overlays
+    # Filter and prioritize events to prevent overlaps
+    # Group events by priority and deduplicate overlapping timeframes
+    priority_order = {"warning": 4, "dispensing": 3, "aspiration": 3, "well_state": 2, "pipette_setting": 1, "tip_change": 0}
+    
+    # Sort events by priority, then by start time
+    sorted_events = sorted(timeline_events, key=lambda x: (x["start_time"], -priority_order.get(x["event_type"], 0)))
+    
+    # Remove overlapping events - keep highest priority event for each time period
+    filtered_events = []
+    for event in sorted_events:
+        start_time = event["start_time"]
+        end_time = event["end_time"]
+        
+        # Check for overlap with existing events
+        has_overlap = False
+        for existing in filtered_events:
+            existing_start = existing["start_time"]
+            existing_end = existing["end_time"]
+            
+            # Check if events overlap
+            if not (end_time <= existing_start or start_time >= existing_end):
+                # Events overlap - keep the higher priority one
+                existing_priority = priority_order.get(existing["event_type"], 0)
+                current_priority = priority_order.get(event["event_type"], 0)
+                
+                if current_priority > existing_priority:
+                    # Remove the existing lower priority event
+                    filtered_events.remove(existing)
+                else:
+                    # Skip this event
+                    has_overlap = True
+                    break
+        
+        if not has_overlap:
+            filtered_events.append(event)
+    
+    # Sort filtered events by start time
+    filtered_events.sort(key=lambda x: x["start_time"])
+    
+    print(f"Filtered to {len(filtered_events)} non-overlapping events from {len(timeline_events)} total")
+    
+    # Build HUD overlays - positioned at top of screen
     video_filters = []
+    current_input = "[0:v]"
     
-    # Add timestamp preservation (if needed)
-    base_filter = "[0:v]"
-    
-    # Add each event as a separate drawtext filter
-    for i, event in enumerate(timeline_events):
+    for i, event in enumerate(filtered_events):
         start_time = event["start_time"]
         end_time = event["end_time"]
         event_type = event["event_type"]
-        title = event["title"].replace("'", "").replace(":", " ").replace(";", " ")  # Clean text
         
-        # Color scheme
+        # Get enhanced text with different sizes for different event types
+        main_text, detail_text, font_size = create_enhanced_event_text(event)
+        
+        # Color scheme - bright and bold for visibility
         colors = {
             "warning": "red",
-            "well_state": "lime",
+            "well_state": "lime", 
             "pipette_setting": "yellow",
             "aspiration": "cyan",
-            "dispensing": "orange", 
+            "dispensing": "orange",
             "tip_change": "white"
         }
         color = colors.get(event_type, "white")
         
-        # Y position based on event type with better spacing
-        y_positions = {
-            "warning": 50,
-            "pipette_setting": 90,
-            "well_state": 130,
-            "aspiration": 170,
-            "dispensing": 210,
-            "tip_change": 250
-        }
-        y_pos = y_positions.get(event_type, 290)
+        # Clean text for FFmpeg
+        main_clean = main_text.replace("'", "").replace(":", " ").replace(";", " ").replace("μ", "u")
+        detail_clean = detail_text.replace("'", "").replace(":", " ").replace(";", " ").replace("μ", "u")
         
-        # Add background box for better readability
-        box_alpha = "0.7"
-        
-        if i == 0:
-            filter_input = "[0:v]"
+        # Determine output label
+        if i == len(filtered_events) - 1:
+            output_label = "[out]"
         else:
-            filter_input = f"[v{i}]"
+            output_label = f"[v{i+1}]"
         
-        if i == len(timeline_events) - 1:
-            filter_output = "[out]"
-        else:
-            filter_output = f"[v{i+1}]"
+        # Get thinking commentary for left side
+        thinking_text = event.get("event_model", {}).get("thinking", "")
+        thinking_clean = thinking_text.replace("'", "").replace(":", " ").replace(";", " ").replace("μ", "u")
+        # Truncate thinking to keep it readable
+        if len(thinking_clean) > 100:
+            thinking_clean = thinking_clean[:97] + "..."
         
-        # Use enhanced event text from BaseModel data
-        enhanced_text = create_enhanced_event_text(event)
-        # Clean text for FFmpeg (remove special chars that cause issues)
-        clean_text = enhanced_text.replace("'", "").replace(":", " ").replace(";", " ").replace("μ", "u")
+        # Create main HUD text (no manual newlines - use separate filters)
+        main_text_only = main_clean
         
-        # Create drawtext filter with background box
-        drawtext_filter = (
-            f"{filter_input}drawtext=text='{clean_text}'"
-            f":fontcolor={color}:fontsize=20:box=1:boxcolor=black@{box_alpha}"
-            f":x=15:y={y_pos}:enable='between(t,{start_time},{end_time})'{filter_output}"
+        # Position at top of screen, centered horizontally
+        y_position = "60"  # 60 pixels from top
+        
+        # Create main drawtext filter with sci-fi style font
+        main_filter = (
+            f"{current_input}drawtext=text='{main_text_only}'"
+            f":fontcolor={color}:fontsize={font_size}:fontfile=/System/Library/Fonts/Menlo.ttc"
+            f":box=1:boxcolor=black@0.9:boxborderw=6"
+            f":x=(w-text_w)/2:y={y_position}"
+            f":enable='between(t,{start_time},{end_time})'"
         )
         
+        # Add detail text below if it exists
+        detail_y = str(int(y_position) + font_size + 10)
+        if detail_clean and detail_clean.strip():
+            main_filter += f"[temp{i}];[temp{i}]drawtext=text='{detail_clean}'"
+            main_filter += f":fontcolor=white:fontsize={max(24, font_size-12)}:fontfile=/System/Library/Fonts/Menlo.ttc"
+            main_filter += f":box=1:boxcolor=black@0.9:boxborderw=4"
+            main_filter += f":x=(w-text_w)/2:y={detail_y}"
+            main_filter += f":enable='between(t,{start_time},{end_time})'"
+        
+        # Add thinking commentary on left side if it exists
+        if thinking_clean and thinking_clean.strip():
+            thinking_y = str(int(y_position) + 20)
+            if detail_clean:
+                main_filter += f"[temp{i}b];[temp{i}b]"
+            else:
+                main_filter += f"[temp{i}];[temp{i}]"
+            
+            main_filter += f"drawtext=text='{thinking_clean}'"
+            main_filter += f":fontcolor=gray:fontsize=16:fontfile=/System/Library/Fonts/Menlo.ttc"
+            main_filter += f":box=1:boxcolor=black@0.8:boxborderw=2"
+            main_filter += f":x=20:y={thinking_y}"  # Left side, 20px from edge
+            main_filter += f":enable='between(t,{start_time},{end_time})'"
+        
+        main_filter += output_label
+        drawtext_filter = main_filter
+        
         video_filters.append(drawtext_filter)
+        current_input = output_label
     
     # Combine all filters
     complex_filter = ";".join(video_filters)
