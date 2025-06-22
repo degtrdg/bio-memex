@@ -87,79 +87,18 @@ class TipChangeEvent(BaseModel):
     )
 
 
-# Warning/Contamination Models
-class TipContaminationEvent(BaseModel):
-    """Track tip contamination from reagent contact"""
-
-    thinking: str = Field(..., description="Reasoning about contamination event")
-    timestamp_range: str = Field(..., description="When contamination occurred")
-    tip_id: str = Field(..., description="Identifier for the tip")
-    contaminating_reagent: str = Field(
-        ..., description="Reagent that contaminated the tip"
-    )
-
-
-class ContaminationWarning(BaseModel):
-    """Warning about potential cross-contamination"""
-
-    thinking: str = Field(..., description="Reasoning about the contamination risk")
-    timestamp_range: str = Field(..., description="When warning was triggered")
-    warning_type: str = Field(..., description="Type of contamination warning")
-    contaminated_tip: str = Field(..., description="ID of contaminated tip")
-    source_reagent: str = Field(..., description="Original contaminating reagent")
-    target_reagent: str = Field(..., description="Reagent being contaminated")
-
-
-# State Tracking Models
-class WellState(BaseModel):
-    """Current state of a specific well"""
-
-    well_id: str = Field(..., description="Well position (e.g., 'A1', 'B2')")
-    current_reagents: List[Reagent] = Field(
-        default=[], description="Currently added reagents"
-    )
-    target_reagents: List[Reagent] = Field(
-        ..., description="Target reagents for this well"
-    )
-    is_complete: bool = Field(default=False, description="Whether well matches target")
-
-
-class ExperimentState(BaseModel):
-    """Overall experiment progress tracking"""
-
-    timestamp: str = Field(..., description="Current analysis timestamp")
-    wells: List[WellState] = Field(..., description="State of all wells")
-    next_required_actions: List[str] = Field(
-        default=[], description="What needs to happen next"
-    )
-
-
-# General Warning Models
-class GeneralWarning(BaseModel):
-    """General experimental warning or error"""
+class WarningEvent(BaseModel):
+    """General warning event"""
 
     thinking: str = Field(..., description="Reasoning about the warning")
     timestamp_range: str = Field(..., description="When warning occurred")
-    severity: str = Field(
-        ..., description="Warning severity (low, medium, high, critical)"
-    )
-    warning_message: str = Field(..., description="Human-readable warning message")
-    suggested_action: Optional[str] = Field(
-        default=None, description="Suggested action to resolve warning"
-    )
+    warning_message: str = Field(..., description="What the warning is about")
 
 
-class ExperimentProgress(BaseModel):
-    """Incremental progress tracking for user display"""
+class WellStateEvent(BaseModel):
+    """Well state change event"""
 
-    thinking: str = Field(..., description="Analysis of current progress")
-    timestamp: str = Field(..., description="Current analysis time")
-    current_step: Optional[str] = Field(
-        default=None, description="Currently active step"
-    )
-    remaining_steps: List[str] = Field(
-        default=[], description="Steps still to be completed"
-    )
-    overall_progress_percentage: float = Field(
-        ..., description="Overall experiment completion percentage"
-    )
+    thinking: str = Field(..., description="Reasoning about well state change")
+    timestamp_range: str = Field(..., description="When state changed")
+    well_id: str = Field(..., description="Well position (e.g., 'A1', 'B2')")
+    is_complete: bool = Field(..., description="Whether well is now complete")
