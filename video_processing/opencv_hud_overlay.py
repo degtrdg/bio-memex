@@ -26,13 +26,13 @@ def create_enhanced_event_text(event: Dict) -> Tuple[str, str]:
         reagent = event_model.get("reagent", {})
         reagent_name = reagent.get('name', 'Unknown').replace('Reagent ', '')
         volume = reagent.get('volume_ul', 0)
-        return f"ASPIRATING {reagent_name}", f"{volume}μL"
+        return f"ASPIRATING {reagent_name}", f"{volume}uL"  # Use 'uL' instead of 'μL'
     
     elif event_model_type == "DispensingEvent":
         reagent = event_model.get("reagent", {})
         reagent_name = reagent.get('name', 'Unknown').replace('Reagent ', '')
         volume = reagent.get('volume_ul', 0)
-        return f"DISPENSING {reagent_name}", f"{volume}μL"
+        return f"DISPENSING {reagent_name}", f"{volume}uL"  # Use 'uL' instead of 'μL'
     
     elif event_model_type == "WellStateEvent":
         well_id = event_model.get("well_id", "?")
@@ -47,7 +47,7 @@ def create_enhanced_event_text(event: Dict) -> Tuple[str, str]:
     
     elif event_model_type == "PipetteSettingChange":
         volume = event_model.get("new_setting_ul", 0)
-        return f"PIPETTE SET", f"{volume}μL"
+        return f"PIPETTE SET", f"{volume}uL"  # Use 'uL' instead of 'μL'
     
     elif event_model_type == "WarningEvent":
         warning = event_model.get("warning_message", "Warning")
@@ -74,26 +74,100 @@ def get_text_color(event_type: str) -> Tuple[int, int, int]:
     return colors.get(event_type, (255, 255, 255))
 
 
-def draw_text_with_background(frame, text, position, font_scale, color, thickness=2, bg_color=(0, 0, 0)):
-    """Draw text with a background box for better visibility"""
-    font = cv2.FONT_HERSHEY_SIMPLEX
+def draw_hud_text(frame, text, position, font_scale, color, thickness=2, center=False):
+    """Draw text with proper HUD styling - no ugly black boxes!"""
+    font = cv2.FONT_HERSHEY_COMPLEX  # More technical/HUD-like font
     
     # Get text size
     (text_width, text_height), baseline = cv2.getTextSize(text, font, font_scale, thickness)
     
     x, y = position
     
-    # Draw background rectangle
-    padding = 10
-    cv2.rectangle(frame, 
-                 (x - padding, y - text_height - padding), 
-                 (x + text_width + padding, y + baseline + padding), 
-                 bg_color, -1)
+    # Center the text if requested
+    if center:
+        x = x - text_width // 2
     
-    # Draw text
+    # Draw subtle glow effect (multiple layers)
+    glow_color = (20, 20, 20)  # Dark glow
+    for offset in [4, 3, 2, 1]:
+        cv2.putText(frame, text, (x, y), font, font_scale, glow_color, thickness + offset, cv2.LINE_AA)
+    
+    # Draw main text with bright color
     cv2.putText(frame, text, (x, y), font, font_scale, color, thickness, cv2.LINE_AA)
     
     return text_width, text_height
+
+
+def draw_hud_panel(frame, text, x, y, max_width, font_scale, color):
+    """Draw text in a proper HUD panel with hexagonal styling"""
+    font = cv2.FONT_HERSHEY_COMPLEX
+    thickness = 2
+    line_height = int(32 * font_scale)
+    
+    # Split text into words and wrap
+    words = text.split()
+    lines = []
+    current_line = ""
+    
+    for word in words:
+        test_line = current_line + " " + word if current_line else word
+        (test_width, _), _ = cv2.getTextSize(test_line, font, font_scale, thickness)
+        
+        if test_width <= max_width - 40:  # Leave padding
+            current_line = test_line
+        else:
+            if current_line:
+                lines.append(current_line)
+            current_line = word
+    
+    if current_line:
+        lines.append(current_line)
+    
+    # Limit to 5 lines max for cleaner look
+    if len(lines) > 5:
+        lines = lines[:5]
+        lines[-1] = lines[-1][:35] + "..."
+    
+    # Calculate panel dimensions
+    panel_height = len(lines) * line_height + 40
+    panel_width = max_width + 40
+    
+    # Create hexagonal/angled panel shape
+    points = np.array([
+        [x, y + 15],  # Top left with angle
+        [x + 15, y],  # Top left corner
+        [x + panel_width - 15, y],  # Top right
+        [x + panel_width, y + 15],  # Top right with angle
+        [x + panel_width, y + panel_height - 15],  # Bottom right
+        [x + panel_width - 15, y + panel_height],  # Bottom right corner
+        [x + 15, y + panel_height],  # Bottom left
+        [x, y + panel_height - 15]  # Bottom left with angle
+    ], np.int32)
+    
+    # Draw semi-transparent panel background
+    overlay = frame.copy()
+    cv2.fillPoly(overlay, [points], (10, 25, 40))  # Dark blue-gray
+    cv2.addWeighted(overlay, 0.8, frame, 0.2, 0, frame)
+    
+    # Draw panel border with gradient effect
+    cv2.polylines(frame, [points], True, (0, 150, 255), 2)  # Bright cyan border
+    cv2.polylines(frame, [points], True, (0, 80, 150), 1)   # Inner glow
+    
+    # Add corner accent lights
+    corner_size = 8
+    for point in [points[1], points[3], points[5], points[7]]:
+        cv2.circle(frame, tuple(point), corner_size, (0, 255, 255), -1)
+        cv2.circle(frame, tuple(point), corner_size-2, (0, 150, 255), -1)
+    
+    # Draw each line with subtle glow
+    for i, line in enumerate(lines):
+        line_y = y + 25 + (i + 1) * line_height
+        # Glow effect
+        cv2.putText(frame, line, (x + 20, line_y), font, font_scale, (10, 10, 10), thickness + 2, cv2.LINE_AA)
+        # Main text
+        cv2.putText(frame, line, (x + 20, line_y), font, font_scale, color, thickness, cv2.LINE_AA)
+    
+    return panel_height
 
 
 def create_hud_video_opencv(input_video: str, timeline_file: str, output_video: str) -> None:
@@ -157,35 +231,37 @@ def create_hud_video_opencv(input_video: str, timeline_file: str, output_video: 
             main_text, detail_text = create_enhanced_event_text(event)
             color = get_text_color(event["event_type"])
             
-            # Draw main action text at top center
-            main_font_scale = 2.5  # Much bigger
-            text_width, text_height = draw_text_with_background(
+            # Draw main action text with HUD glow effect
+            main_font_scale = 3.0  # Massive for impact
+            draw_hud_text(
                 frame, main_text, 
-                (width//2 - len(main_text)*20, 80),  # Rough centering
-                main_font_scale, color, thickness=3
+                (width//2, 90),
+                main_font_scale, color, thickness=3, center=True
             )
             
-            # Draw detail text below main text
+            # Draw detail text with glow
             if detail_text:
-                detail_font_scale = 1.5
-                draw_text_with_background(
+                detail_font_scale = 1.6
+                draw_hud_text(
                     frame, detail_text,
-                    (width//2 - len(detail_text)*15, 150),  # Below main text
-                    detail_font_scale, (255, 255, 255), thickness=2
+                    (width//2, 170),
+                    detail_font_scale, (255, 255, 255), thickness=2, center=True
                 )
             
-            # Draw thinking commentary at bottom center
+            # Draw thinking commentary as sci-fi HUD panel
             thinking_text = event.get("event_model", {}).get("thinking", "")
             if thinking_text:
-                # Limit length to fit screen
-                if len(thinking_text) > 80:
-                    thinking_text = thinking_text[:77] + "..."
+                # Left panel parameters
+                panel_x = 25
+                panel_y = 250  # Start below main text
+                panel_width = 380
+                commentary_font_scale = 0.6
                 
-                commentary_font_scale = 0.8
-                draw_text_with_background(
+                # Draw hexagonal HUD panel on left side
+                draw_hud_panel(
                     frame, thinking_text,
-                    (width//2 - len(thinking_text)*8, height - 60),  # Bottom center
-                    commentary_font_scale, (0, 255, 255), thickness=2  # Cyan
+                    panel_x, panel_y, panel_width,
+                    commentary_font_scale, (100, 255, 255)  # Light cyan
                 )
         
         # Write frame
