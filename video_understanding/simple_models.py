@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -63,7 +63,7 @@ class AspirationEvent(BaseModel):
         ..., description="Time range analyzed (e.g., '0:29 - 0:32')"
     )
 
-    reagent_name: str = Field(..., description="Name of reagent aspirated")
+    reagent: Reagent = Field(..., description="Reagent aspirated")
 
 
 class DispensingEvent(BaseModel):
