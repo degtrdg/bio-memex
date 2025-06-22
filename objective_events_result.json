@@ -1,0 +1,93 @@
+{
+  "events": [
+    {
+      "thinking": "The user picks up the pipette and adjusts the volume setting. The display is visible and is adjusted until it reads '030', which corresponds to 30.0 µL, matching the volume specified in the procedure.",
+      "timestamp_range": "0:07 - 0:08",
+      "new_setting_ul": 30
+    },
+    {
+      "thinking": "The user attaches the first pipette tip from the yellow tip box to begin the experiment.",
+      "timestamp_range": "0:11 - 0:12"
+    },
+    {
+      "thinking": "The user aspirates from the first tube in the front row of the tube rack. Based on the procedure, this is the source for 'Reagent A'.",
+      "timestamp_range": "0:13 - 0:14",
+      "reagent": { "name": "Reagent A", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses the aspirated liquid into the well plate. Following the procedure for Reagent A, the first destination is well A1.",
+      "timestamp_range": "0:15 - 0:16",
+      "reagent": { "name": "Reagent A", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses more of Reagent A into the well plate. Following the procedure, the second destination is well B3.",
+      "timestamp_range": "0:18 - 0:19",
+      "reagent": { "name": "Reagent A", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses the last of Reagent A into the well plate. Following the procedure, the final destination for this reagent is well C2.",
+      "timestamp_range": "0:21 - 0:22",
+      "reagent": { "name": "Reagent A", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "After completing all dispenses for Reagent A, the user ejects the contaminated tip to prevent cross-contamination.",
+      "timestamp_range": "0:28 - 0:30"
+    },
+    {
+      "thinking": "The user attaches a new, clean pipette tip to handle the next reagent.",
+      "timestamp_range": "0:31 - 0:32"
+    },
+    {
+      "thinking": "The user aspirates from the second tube in the front row of the tube rack. According to the procedure, this is the source for 'Reagent B'.",
+      "timestamp_range": "0:33 - 0:34",
+      "reagent": { "name": "Reagent B", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses Reagent B into the well plate. Based on the procedure, the first destination for this reagent is well A2.",
+      "timestamp_range": "0:38 - 0:39",
+      "reagent": { "name": "Reagent B", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses more of Reagent B. Following the procedure, the next destination is well B1.",
+      "timestamp_range": "0:41 - 0:42",
+      "reagent": { "name": "Reagent B", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses the final aliquot of Reagent B. The procedure indicates the destination is well C3.",
+      "timestamp_range": "0:45 - 0:46",
+      "reagent": { "name": "Reagent B", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user ejects the second pipette tip after finishing with Reagent B.",
+      "timestamp_range": "0:50 - 0:51"
+    },
+    {
+      "thinking": "A third clean tip is attached to handle the final reagent, Reagent C.",
+      "timestamp_range": "0:51 - 0:52"
+    },
+    {
+      "thinking": "The user aspirates from the third tube in the rack, which contains a blue liquid. This corresponds to 'Reagent C' from the procedure.",
+      "timestamp_range": "0:55 - 0:56",
+      "reagent": { "name": "Reagent C", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses the blue Reagent C into the well plate. The procedure's first destination for this reagent is well A3.",
+      "timestamp_range": "0:59 - 1:00",
+      "reagent": { "name": "Reagent C", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses more of the blue Reagent C. The next destination according to the procedure is well B2.",
+      "timestamp_range": "1:05 - 1:06",
+      "reagent": { "name": "Reagent C", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "The user dispenses the final aliquot of the blue Reagent C. The procedure indicates the last destination is well C1.",
+      "timestamp_range": "1:08 - 1:09",
+      "reagent": { "name": "Reagent C", "volume_ul": 30.0 }
+    },
+    {
+      "thinking": "After the final dispense, the user ejects the last pipette tip.",
+      "timestamp_range": "1:11 - 1:12"
+    }
+  ]
+}
