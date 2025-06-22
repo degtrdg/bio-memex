@@ -157,13 +157,22 @@ YOUR TASK:
 Identify instances of these analysis events:
 
 1. WARNING EVENTS:
+   - Environment/General warnings (report only ONCE at the beginning if present):
+     * Poor lighting conditions that affect observation
+     * Workspace organization issues
+     * General procedural setup concerns
    - Technical errors (air bubbles, incorrect volumes, contamination risks)
-   - Procedural mistakes (wrong reagents, incorrect destinations)
    - Safety concerns or poor technique
    - Equipment malfunctions or issues
+   - Contamination risks:
+     * Tip reuse between different reagents without changing
+     * Using contaminated tips or containers
+     * Cross-contamination between wells
 
 2. WELL STATE EVENTS:
-   - When wells/containers transition from incomplete to complete
+   - Track EVERY reagent addition to each well (not just completion)
+   - When wells/containers transition from incomplete to complete (is_complete=true)
+   - When wells receive partial additions but remain incomplete (is_complete=false)
    - When wells reach their target reagent composition
    - Changes in completion status based on experimental progress
 
@@ -175,24 +184,46 @@ ANALYSIS APPROACH:
 - Consider contamination risks and proper technique
 
 WARNING DETECTION:
-- Look for visible air bubbles in tips
-- Check for volume mismatches (pipette setting vs. actual transfer)
-- Note any liquid handling errors
-- Identify contamination risks (tip reuse, cross-contamination)
+- Environment/General (report ONCE at beginning only):
+  * Check workspace setup and lighting conditions
+  * Note any general procedural concerns
+- Technical issues:
+  * Look for visible air bubbles in tips
+  * Check for volume mismatches (pipette setting vs. actual transfer)
+  * Note any liquid handling errors
+- Contamination risks (critical for accuracy):
+  * Analyze the OBJECTIVE EVENTS timeline to identify contamination patterns
+  * Look for tip reuse between different reagents without tip changes
+  * Track when tips that contained one reagent are used for another reagent
+  * Identify cross-contamination: pipetting into wells containing reagents, then going back to source containers
+  * Example contamination pattern: Aspirate from reagent A → Dispense into well A1 → Aspirate from reagent B → Dispense into well A1 → Aspirate from reagent A again (now contaminated with B)
+  * Watch for when contaminated tips return to source containers
+  * Flag when contaminated containers are used
 
 WELL STATE TRACKING:
+- Track EVERY reagent addition to each well, not just final completion
+- Create events for partial completions (is_complete=false) when wells receive some but not all required reagents
+- Mark wells as complete (is_complete=true) when they contain all required reagents
+- For each well state event, specify:
+  * current_contents: List of reagents currently in the well
+  * missing_reagents: List of reagents still needed to complete the well
 - Compare current well contents to target state from procedure
-- Mark wells as complete when they contain all required reagents
 - Note the reasoning for completion status changes
+- Generate events for each step of well filling process
 
 IMPORTANT REMINDERS:
 - Video is 1 FPS: make educated inferences between frames
-- Be conservative with warnings - only report clear issues
+- Environment/General warnings: Report ONLY ONCE at the beginning if present
+- Be conservative with warnings - only report clear, egregious issues
 - Base completion status on observable evidence
+- Generate well state events for EVERY reagent addition (both partial and complete)
+- Track contamination carefully - this is critical for experimental validity
 - Don't create false positives
 - Use specific timestamp intervals to avoid HUD noise since these events will be displayed alongside other events
 
-OUTPUT: Return lists of WarningEvent and WellStateEvent objects for all detected issues and state changes."""
+OUTPUT: Return lists of WarningEvent and WellStateEvent objects for all detected issues and state changes. Include both partial completions (is_complete=false) and final completions (is_complete=true) for comprehensive tracking.
+- WarningEvent objects must include both warning_message and description fields
+- WellStateEvent objects must include current_contents and missing_reagents fields"""
 
     return system_prompt, user_prompt
 
