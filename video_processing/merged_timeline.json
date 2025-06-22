@@ -77,8 +77,8 @@
       "event_model_type": "PipetteSettingChange"
     },
     {
-      "start_time": 11,
-      "end_time": 12,
+      "start_time": 13,
+      "end_time": 14,
       "event_type": "tip_change",
       "title": "Tip Change",
       "description": "Pipette tip attached/removed",
@@ -90,8 +90,8 @@
       "event_model_type": "TipChangeEvent"
     },
     {
-      "start_time": 13,
-      "end_time": 14,
+      "start_time": 18,
+      "end_time": 19,
       "event_type": "aspiration",
       "title": "Aspirate Reagent A",
       "description": "Drew 30.0\u03bcL of Reagent A",
@@ -107,8 +107,25 @@
       "event_model_type": "AspirationEvent"
     },
     {
-      "start_time": 15,
-      "end_time": 16,
+      "start_time": 20,
+      "end_time": 22,
+      "event_type": "dispensing",
+      "title": "Dispense Reagent A",
+      "description": "Added 30.0\u03bcL of Reagent A",
+      "priority": "medium",
+      "event_model": {
+        "thinking": "The user dispenses the 30 \u00b5L of Reagent A into the first well of the 96-well plate, corresponding to well A1 in the procedure.",
+        "timestamp_range": "0:15 - 0:16",
+        "reagent": {
+          "name": "Reagent A",
+          "volume_ul": 30.0
+        }
+      },
+      "event_model_type": "DispensingEvent"
+    },
+    {
+      "start_time": 21,
+      "end_time": 22,
       "event_type": "well_state",
       "title": "Well A1: Partial",
       "description": "Contains: Reagent A",
@@ -134,25 +151,8 @@
       "event_model_type": "WellStateEvent"
     },
     {
-      "start_time": 15,
-      "end_time": 16,
-      "event_type": "dispensing",
-      "title": "Dispense Reagent A",
-      "description": "Added 30.0\u03bcL of Reagent A",
-      "priority": "medium",
-      "event_model": {
-        "thinking": "The user dispenses the 30 \u00b5L of Reagent A into the first well of the 96-well plate, corresponding to well A1 in the procedure.",
-        "timestamp_range": "0:15 - 0:16",
-        "reagent": {
-          "name": "Reagent A",
-          "volume_ul": 30.0
-        }
-      },
-      "event_model_type": "DispensingEvent"
-    },
-    {
-      "start_time": 17,
-      "end_time": 18,
+      "start_time": 24,
+      "end_time": 25,
       "event_type": "aspiration",
       "title": "Aspirate Reagent A",
       "description": "Drew 30.0\u03bcL of Reagent A",
@@ -168,8 +168,25 @@
       "event_model_type": "AspirationEvent"
     },
     {
-      "start_time": 20,
-      "end_time": 21,
+      "start_time": 27,
+      "end_time": 28,
+      "event_type": "dispensing",
+      "title": "Dispense Reagent A",
+      "description": "Added 30.0\u03bcL of Reagent A",
+      "priority": "medium",
+      "event_model": {
+        "thinking": "The user dispenses the 30 \u00b5L of Reagent A into the second well of the 96-well plate, corresponding to well A2 in the procedure.",
+        "timestamp_range": "0:20 - 0:21",
+        "reagent": {
+          "name": "Reagent A",
+          "volume_ul": 30.0
+        }
+      },
+      "event_model_type": "DispensingEvent"
+    },
+    {
+      "start_time": 28,
+      "end_time": 29,
       "event_type": "well_state",
       "title": "Well A2: Partial",
       "description": "Contains: Reagent A",
@@ -195,25 +212,8 @@
       "event_model_type": "WellStateEvent"
     },
     {
-      "start_time": 20,
-      "end_time": 21,
-      "event_type": "dispensing",
-      "title": "Dispense Reagent A",
-      "description": "Added 30.0\u03bcL of Reagent A",
-      "priority": "medium",
-      "event_model": {
-        "thinking": "The user dispenses the 30 \u00b5L of Reagent A into the second well of the 96-well plate, corresponding to well A2 in the procedure.",
-        "timestamp_range": "0:20 - 0:21",
-        "reagent": {
-          "name": "Reagent A",
-          "volume_ul": 30.0
-        }
-      },
-      "event_model_type": "DispensingEvent"
-    },
-    {
-      "start_time": 29,
-      "end_time": 30,
+      "start_time": 34,
+      "end_time": 35,
       "event_type": "tip_change",
       "title": "Tip Change",
       "description": "Pipette tip attached/removed",
@@ -238,8 +238,8 @@
       "event_model_type": "TipChangeEvent"
     },
     {
-      "start_time": 37,
-      "end_time": 38,
+      "start_time": 39,
+      "end_time": 40,
       "event_type": "aspiration",
       "title": "Aspirate Reagent B",
       "description": "Drew 30.0\u03bcL of Reagent B",
@@ -255,8 +255,25 @@
       "event_model_type": "AspirationEvent"
     },
     {
-      "start_time": 41,
-      "end_time": 42,
+      "start_time": 42,
+      "end_time": 43,
+      "event_type": "dispensing",
+      "title": "Dispense Reagent B",
+      "description": "Added 30.0\u03bcL of Reagent B",
+      "priority": "medium",
+      "event_model": {
+        "thinking": "The user dispenses the 30 \u00b5L of Reagent B into well A1, which already contains Reagent A, as per the procedure.",
+        "timestamp_range": "0:41 - 0:42",
+        "reagent": {
+          "name": "Reagent B",
+          "volume_ul": 30.0
+        }
+      },
+      "event_model_type": "DispensingEvent"
+    },
+    {
+      "start_time": 43,
+      "end_time": 44,
       "event_type": "well_state",
       "title": "Well A1: Complete",
       "description": "Contains: Reagent A, Reagent B",
@@ -281,25 +298,8 @@
       "event_model_type": "WellStateEvent"
     },
     {
-      "start_time": 41,
-      "end_time": 42,
-      "event_type": "dispensing",
-      "title": "Dispense Reagent B",
-      "description": "Added 30.0\u03bcL of Reagent B",
-      "priority": "medium",
-      "event_model": {
-        "thinking": "The user dispenses the 30 \u00b5L of Reagent B into well A1, which already contains Reagent A, as per the procedure.",
-        "timestamp_range": "0:41 - 0:42",
-        "reagent": {
-          "name": "Reagent B",
-          "volume_ul": 30.0
-        }
-      },
-      "event_model_type": "DispensingEvent"
-    },
-    {
       "start_time": 43,
-      "end_time": 44,
+      "end_time": 46,
       "event_type": "warning",
       "title": "Cross-contamination of stock solution. The pipette tip was submerged in well A1 (containing Reagent A) and then used to aspirate from the Reagent B source, contaminating the stock.",
       "description": "Reagent B Contaminated",
@@ -313,8 +313,8 @@
       "event_model_type": "WarningEvent"
     },
     {
-      "start_time": 43,
-      "end_time": 44,
+      "start_time": 46,
+      "end_time": 47,
       "event_type": "aspiration",
       "title": "Aspirate Reagent B",
       "description": "Drew 30.0\u03bcL of Reagent B",
@@ -330,8 +330,25 @@
       "event_model_type": "AspirationEvent"
     },
     {
-      "start_time": 45,
-      "end_time": 46,
+      "start_time": 48,
+      "end_time": 49,
+      "event_type": "dispensing",
+      "title": "Dispense Reagent B",
+      "description": "Added 30.0\u03bcL of Reagent B",
+      "priority": "medium",
+      "event_model": {
+        "thinking": "The user dispenses the 30 \u00b5L of Reagent B into the third well, A3, as dictated by the experimental plan.",
+        "timestamp_range": "0:45 - 0:46",
+        "reagent": {
+          "name": "Reagent B",
+          "volume_ul": 30.0
+        }
+      },
+      "event_model_type": "DispensingEvent"
+    },
+    {
+      "start_time": 49,
+      "end_time": 50,
       "event_type": "well_state",
       "title": "Well A3: Partial",
       "description": "Contains: Reagent B",
@@ -357,25 +374,8 @@
       "event_model_type": "WellStateEvent"
     },
     {
-      "start_time": 45,
-      "end_time": 46,
-      "event_type": "dispensing",
-      "title": "Dispense Reagent B",
-      "description": "Added 30.0\u03bcL of Reagent B",
-      "priority": "medium",
-      "event_model": {
-        "thinking": "The user dispenses the 30 \u00b5L of Reagent B into the third well, A3, as dictated by the experimental plan.",
-        "timestamp_range": "0:45 - 0:46",
-        "reagent": {
-          "name": "Reagent B",
-          "volume_ul": 30.0
-        }
-      },
-      "event_model_type": "DispensingEvent"
-    },
-    {
-      "start_time": 50,
-      "end_time": 51,
+      "start_time": 51,
+      "end_time": 52,
       "event_type": "tip_change",
       "title": "Tip Change",
       "description": "Pipette tip attached/removed",
@@ -387,8 +387,8 @@
       "event_model_type": "TipChangeEvent"
     },
     {
-      "start_time": 54,
-      "end_time": 55,
+      "start_time": 57,
+      "end_time": 58,
       "event_type": "tip_change",
       "title": "Tip Change",
       "description": "Pipette tip attached/removed",
@@ -400,8 +400,8 @@
       "event_model_type": "TipChangeEvent"
     },
     {
-      "start_time": 56,
-      "end_time": 57,
+      "start_time": 59,
+      "end_time": 60,
       "event_type": "aspiration",
       "title": "Aspirate Reagent C",
       "description": "Drew 30.0\u03bcL of Reagent C",
@@ -417,8 +417,25 @@
       "event_model_type": "AspirationEvent"
     },
     {
-      "start_time": 59,
-      "end_time": 60,
+      "start_time": 61,
+      "end_time": 62,
+      "event_type": "dispensing",
+      "title": "Dispense Reagent C",
+      "description": "Added 30.0\u03bcL of Reagent C",
+      "priority": "medium",
+      "event_model": {
+        "thinking": "The user dispenses the 30 \u00b5L of blue Reagent C into well A2, which already contains Reagent A.",
+        "timestamp_range": "0:59 - 1:00",
+        "reagent": {
+          "name": "Reagent C",
+          "volume_ul": 30.0
+        }
+      },
+      "event_model_type": "DispensingEvent"
+    },
+    {
+      "start_time": 62,
+      "end_time": 63,
       "event_type": "well_state",
       "title": "Well A2: Complete",
       "description": "Contains: Reagent A, Reagent C",
@@ -443,25 +460,8 @@
       "event_model_type": "WellStateEvent"
     },
     {
-      "start_time": 59,
-      "end_time": 60,
-      "event_type": "dispensing",
-      "title": "Dispense Reagent C",
-      "description": "Added 30.0\u03bcL of Reagent C",
-      "priority": "medium",
-      "event_model": {
-        "thinking": "The user dispenses the 30 \u00b5L of blue Reagent C into well A2, which already contains Reagent A.",
-        "timestamp_range": "0:59 - 1:00",
-        "reagent": {
-          "name": "Reagent C",
-          "volume_ul": 30.0
-        }
-      },
-      "event_model_type": "DispensingEvent"
-    },
-    {
       "start_time": 63,
-      "end_time": 64,
+      "end_time": 65,
       "event_type": "warning",
       "title": "Cross-contamination of stock solution. The pipette tip was submerged in well A2 (containing Reagent A) and then used to aspirate from the Reagent C source, contaminating the stock.",
       "description": "Reagent C Contaminated",
@@ -475,8 +475,8 @@
       "event_model_type": "WarningEvent"
     },
     {
-      "start_time": 63,
-      "end_time": 64,
+      "start_time": 67,
+      "end_time": 68,
       "event_type": "aspiration",
       "title": "Aspirate Reagent C",
       "description": "Drew 30.0\u03bcL of Reagent C",
@@ -492,8 +492,25 @@
       "event_model_type": "AspirationEvent"
     },
     {
-      "start_time": 66,
-      "end_time": 67,
+      "start_time": 69,
+      "end_time": 70,
+      "event_type": "dispensing",
+      "title": "Dispense Reagent C",
+      "description": "Added 30.0\u03bcL of Reagent C",
+      "priority": "medium",
+      "event_model": {
+        "thinking": "The user dispenses the final 30 \u00b5L of Reagent C into well A3, completing the pipetting plan.",
+        "timestamp_range": "1:06 - 1:07",
+        "reagent": {
+          "name": "Reagent C",
+          "volume_ul": 30.0
+        }
+      },
+      "event_model_type": "DispensingEvent"
+    },
+    {
+      "start_time": 70,
+      "end_time": 71,
       "event_type": "well_state",
       "title": "Well A3: Complete",
       "description": "Contains: Reagent B, Reagent C",
@@ -516,23 +533,6 @@
         "missing_reagents": []
       },
       "event_model_type": "WellStateEvent"
-    },
-    {
-      "start_time": 66,
-      "end_time": 67,
-      "event_type": "dispensing",
-      "title": "Dispense Reagent C",
-      "description": "Added 30.0\u03bcL of Reagent C",
-      "priority": "medium",
-      "event_model": {
-        "thinking": "The user dispenses the final 30 \u00b5L of Reagent C into well A3, completing the pipetting plan.",
-        "timestamp_range": "1:06 - 1:07",
-        "reagent": {
-          "name": "Reagent C",
-          "volume_ul": 30.0
-        }
-      },
-      "event_model_type": "DispensingEvent"
     },
     {
       "start_time": 70,

@@ -27,5 +27,14 @@ def get_available_resources() -> list[tuple[str, str, str]]:
     ]
 
 
+@mcp.tool()
+def generate_protocol(
+    steps: list[str],
+    pipettes: list[tuple[str, str]],
+    resources: list[tuple[str, str, str]],
+) -> str:
+    return "print('nice')"
+
+
 if __name__ == "__main__":
     mcp.run()
