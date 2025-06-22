@@ -171,7 +171,10 @@ def merge_events_to_timeline(
         elif "well_id" in event_data:
             parsed_analysis_events.append(WellStateEvent(**event_data))
     
-    analysis_events = AnalysisEventsResult(events=parsed_analysis_events)
+    analysis_events = AnalysisEventsResult(
+        thinking=analysis_data.get("thinking", "Analysis events extracted from video"),
+        events=parsed_analysis_events
+    )
     
     with open(objective_file, 'r') as f:
         objective_data = json.load(f)
@@ -192,7 +195,10 @@ def merge_events_to_timeline(
             # Tip change event
             parsed_objective_events.append(TipChangeEvent(**event_data))
     
-    objective_events = ObjectiveEventsList(events=parsed_objective_events)
+    objective_events = ObjectiveEventsList(
+        thinking=objective_data.get("thinking", "Objective events extracted from video"),
+        events=parsed_objective_events
+    )
     
     with open(procedure_file, 'r') as f:
         procedure_data = json.load(f)
