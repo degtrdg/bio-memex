@@ -185,12 +185,12 @@ def create_hud_video(
         else:
             output_label = f"[v{i+1}]"
         
-        # Get thinking commentary for left side
+        # Get thinking commentary for bottom center
         thinking_text = event.get("event_model", {}).get("thinking", "")
         thinking_clean = thinking_text.replace("'", "").replace(":", " ").replace(";", " ").replace("μ", "u")
-        # Limit length for sidebar display
-        if len(thinking_clean) > 150:
-            thinking_clean = thinking_clean[:147] + "..."
+        # Limit length much more aggressively for bottom display to prevent overflow
+        if len(thinking_clean) > 80:
+            thinking_clean = thinking_clean[:77] + "..."
         
         # Create main HUD text (no manual newlines - use separate filters)
         main_text_only = main_clean
@@ -222,8 +222,8 @@ def create_hud_video(
         
         # Add thinking commentary at bottom center if it exists
         if thinking_clean and thinking_clean.strip():
-            # Position at bottom of screen, centered horizontally
-            commentary_y = "h-120"  # 120 pixels from bottom
+            # Position higher up from bottom to avoid cut-off
+            commentary_y = "h-80"  # 80 pixels from bottom (was 120)
             
             if detail_clean:
                 main_filter += f"[temp{i}b];[temp{i}b]"
@@ -231,8 +231,8 @@ def create_hud_video(
                 main_filter += f"[temp{i}];[temp{i}]"
             
             main_filter += f"drawtext=text='{thinking_clean}'"
-            main_filter += f":fontcolor=cyan:fontsize=32:fontfile=/System/Library/Fonts/Menlo.ttc"
-            main_filter += f":box=1:boxcolor=black@0.9:boxborderw=6"
+            main_filter += f":fontcolor=cyan:fontsize=28:fontfile=/System/Library/Fonts/Menlo.ttc"  # Smaller font
+            main_filter += f":box=1:boxcolor=black@0.9:boxborderw=4"  # Smaller border
             main_filter += f":x=(w-text_w)/2:y={commentary_y}"  # Bottom center position
             main_filter += f":enable='between(t,{start_time},{end_time})'"
         
